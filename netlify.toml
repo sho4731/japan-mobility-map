@@ -1,0 +1,17 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/map"
+  to   = "/map/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cities"
+  to   = "/cities/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/shareholders"
+  to   = "/shareholders/index.html"
+  status = 200

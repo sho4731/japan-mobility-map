@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="政令指定都市・主要都市の乗用車保有台数と普及率ランキング。出典：自動車検査登録情報協会（AIRIA）">
+<title>都市別ランキング | 日本移動経済マップ</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#0a0e1a;color:#e0e8f0;min-height:100vh}
+header{background:rgba(10,14,26,.97);border-bottom:1px solid #1a2240;padding:0 20px;height:50px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;backdrop-filter:blur(8px)}
+header a{color:#60a5fa;font-size:12px;text-decoration:none}
+header h1{font-size:14px;font-weight:700;color:#fff}
+
+#controls{padding:12px 20px;background:rgba(12,16,30,.95);border-bottom:1px solid #1a2240;display:flex;align-items:center;gap:8px}
+#controls span{font-size:12px;color:#5a7090}
+.btn{padding:5px 14px;border-radius:16px;border:1px solid #2a3460;font-size:11px;cursor:pointer;background:transparent;color:#7a9abf;transition:all .15s;font-family:inherit}
+.btn.active{background:#0f2050;color:#7dd3fc;border-color:#2a5090}
+
+#container{max-width:900px;margin:0 auto;padding:20px}
+
+.note{font-size:11px;color:#3a5070;background:rgba(255,255,255,.02);border:1px solid #1a2240;border-radius:8px;padding:10px 14px;margin-bottom:20px;line-height:1.6}
+
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;color:#4a6080;font-weight:600;padding:8px 12px;border-bottom:1px solid #1a2240;text-align:left;letter-spacing:.04em}
+td{padding:10px 12px;border-bottom:1px solid #0d1020;font-size:13px;vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+.rank{color:#3a5070;font-weight:700;width:40px}
+.rank.top3{color:#f59e0b}
+.city-name{font-weight:600;color:#fff}
+.city-pref{font-size:10px;color:#3a5070;margin-top:1px}
+.bar-cell{width:200px}
+.bar-wrap{background:#0d1020;border-radius:3px;height:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.num{text-align:right;font-weight:600;color:#7dd3fc;font-variant-numeric:tabular-nums}
+.pop-col{text-align:right;color:#3a5070;font-size:11px}
+
+footer{padding:24px 20px;border-top:1px solid #111828;font-size:10px;color:#2a3a50;text-align:center;line-height:2;margin-top:20px}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← ホーム</a>
+  <h1>🏙️ 都市別ランキング</h1>
+  <span style="font-size:11px;color:#3a5070;margin-left:auto">政令指定都市・主要都市 乗用車保有統計 ／ 出典：AIRIA 令和8年2月末現在</span>
+</header>
+
+<div id="controls">
+  <span>並び替え：</span>
+  <button class="btn active" data-sort="car_per1000">🚗 乗用車 / 千人</button>
+  <button class="btn" data-sort="car_total">乗用車 総数</button>
+  <button class="btn" data-sort="pop">人口（大→小）</button>
+</div>
+
+<div id="container">
+  <div class="note">
+    <strong>データについて：</strong> 政令指定都市の保有台数は、各都道府県のAIRIA届出データから人口比按分で推計した値です（※実際の運輸支局別届出とは異なる場合があります）。
+    より精度の高い市区町村別データは <a href="https://www.airia.or.jp/publish/statistics/spread.html" target="_blank" style="color:#38bdf8">AIRIA 普及台数表</a> からご確認ください。
+  </div>
+  <table id="table">
+    <thead>
+      <tr>
+        <th>順位</th><th>都市</th><th>乗用車/千人</th><th class="bar-cell"></th>
+        <th style="text-align:right">保有台数</th><th style="text-align:right">人口</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<footer>
+  データ：一般財団法人 自動車検査登録情報協会（AIRIA）「都道府県別・車種別自動車保有台数」令和8年2月末現在をもとに人口比按分にて推計 ／ 人口：2020年国勢調査
+</footer>
+
+<script>
+const CITIES = [
+  {name:"札幌市",pref:"北海道",pop:1973,car_total:683},
+  {name:"仙台市",pref:"宮城県",pop:1097,car_total:456},
+  {name:"さいたま市",pref:"埼玉県",pop:1324,car_total:508},
+  {name:"千葉市",pref:"千葉県",pop:974,car_total:378},
+  {name:"横浜市",pref:"神奈川県",pop:3778,car_total:1127},
+  {name:"川崎市",pref:"神奈川県",pop:1538,car_total:408},
+  {name:"相模原市",pref:"神奈川県",pop:725,car_total:262},
+  {name:"新潟市",pref:"新潟県",pop:795,car_total:396},
+  {name:"静岡市",pref:"静岡県",pop:689,car_total:310},
+  {name:"浜松市",pref:"静岡県",pop:790,car_total:418},
+  {name:"名古屋市",pref:"愛知県",pop:2333,car_total:862},
+  {name:"京都市",pref:"京都府",pop:1464,car_total:465},
+  {name:"大阪市",pref:"大阪府",pop:2754,car_total:577},
+  {name:"堺市",pref:"大阪府",pop:827,car_total:258},
+  {name:"神戸市",pref:"兵庫県",pop:1526,car_total:510},
+  {name:"岡山市",pref:"岡山県",pop:725,car_total:362},
+  {name:"広島市",pref:"広島県",pop:1200,car_total:533},
+  {name:"北九州市",pref:"福岡県",pop:944,car_total:378},
+  {name:"福岡市",pref:"福岡県",pop:1612,car_total:539},
+  {name:"熊本市",pref:"熊本県",pop:740,car_total:348},
+];
+
+CITIES.forEach(c => {
+  c.car_per1000 = Math.round(c.car_total / c.pop * 1000);
+});
+
+let sortKey = "car_per1000";
+
+const COLORS = ["#f59e0b","#60a5fa","#34d399","#a78bfa","#fb923c"];
+
+function render() {
+  const sorted = [...CITIES].sort((a, b) => b[sortKey] - a[sortKey]);
+  const maxVal = d3.max(sorted, d => d[sortKey]);
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+  sorted.forEach((c, i) => {
+    const rank = i + 1;
+    const ratio = c[sortKey] / maxVal;
+    const color = i < 3 ? COLORS[i] : "#2a4a6a";
+    const barW = Math.round(ratio * 100);
+    const val = sortKey === "car_per1000" ? c.car_per1000 + " 台" :
+                sortKey === "car_total" ? (c.car_total * 1000).toLocaleString() + " 台" :
+                (c.pop * 10000).toLocaleString() + " 人";
+    tbody.innerHTML += `<tr>
+      <td class="rank ${rank<=3?'top3':''}">${rank}</td>
+      <td><div class="city-name">${c.name}</div><div class="city-pref">${c.pref}</div></td>
+      <td class="num">${c.car_per1000}</td>
+      <td class="bar-cell"><div class="bar-wrap"><div class="bar-fill" style="width:${barW}%;background:${color}"></div></div></td>
+      <td class="num">${(c.car_total*1000).toLocaleString()}</td>
+      <td class="pop-col">${(c.pop*10000).toLocaleString()}</td>
+    </tr>`;
+  });
+}
+
+document.querySelectorAll(".btn[data-sort]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    sortKey = btn.dataset.sort;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>

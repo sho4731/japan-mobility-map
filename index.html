@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="日本の自動車・モビリティ・株式市場に関する統計データを地図・グラフで可視化するポータルサイト">
+<title>日本移動経済マップ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#0a0e1a;color:#e0e8f0;min-height:100vh}
+
+header{background:rgba(10,14,26,.97);border-bottom:1px solid #1a2240;padding:0 24px;height:56px;display:flex;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{font-size:15px;font-weight:700;color:#fff;letter-spacing:.04em}
+.logo span{color:#38bdf8}
+
+.hero{text-align:center;padding:64px 24px 48px;background:linear-gradient(180deg,#0d1630 0%,#0a0e1a 100%)}
+.hero-icon{font-size:48px;margin-bottom:16px}
+.hero h1{font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:.02em}
+.hero p{color:#6b7fa0;font-size:14px;line-height:1.7;max-width:520px;margin:0 auto 32px}
+
+.stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:8px}
+.stat{text-align:center}
+.stat-val{font-size:26px;font-weight:800;color:#38bdf8}
+.stat-label{font-size:11px;color:#4a6080;margin-top:2px}
+
+.section-label{text-align:center;font-size:11px;color:#4a5570;letter-spacing:.1em;text-transform:uppercase;margin:48px 0 20px;font-weight:600}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;max-width:1000px;margin:0 auto;padding:0 24px}
+
+.card{background:rgba(255,255,255,.03);border:1px solid #1a2240;border-radius:14px;padding:24px;text-decoration:none;color:inherit;transition:all .2s;display:block;position:relative;overflow:hidden}
+.card:hover{background:rgba(255,255,255,.06);border-color:#2a3860;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.card.coming{opacity:.55;cursor:default}
+.card-badge{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600;letter-spacing:.04em}
+.badge-live{background:#0f3020;color:#4ade80;border:1px solid #1a5030}
+.badge-new{background:#0f1e40;color:#60a5fa;border:1px solid #1a3060}
+.badge-soon{background:#1a1a1a;color:#555;border:1px solid #2a2a2a}
+.card-icon{font-size:28px;margin-bottom:12px}
+.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.card-desc{font-size:12px;color:#5a7090;line-height:1.65}
+.card-meta{margin-top:14px;font-size:11px;color:#3a5070;display:flex;align-items:center;gap:6px}
+.card-meta span{color:#38bdf8}
+
+footer{text-align:center;padding:40px 24px;border-top:1px solid #111828;margin-top:60px;font-size:11px;color:#2a3a50;line-height:2}
+footer a{color:#3a5070;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🗾 日本<span>移動経済</span>マップ</div>
+</header>
+
+<div class="hero">
+  <div class="hero-icon">🗾</div>
+  <h1>日本移動経済マップ</h1>
+  <p>Japan Mobility Economic Map<br>自動車・モビリティ・株式市場に関する統計データをインタラクティブに可視化</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">8,320万台</div><div class="stat-label">全国 自動車総保有台数</div></div>
+    <div class="stat"><div class="stat-val">47</div><div class="stat-label">都道府県</div></div>
+    <div class="stat"><div class="stat-val">20</div><div class="stat-label">政令指定都市</div></div>
+    <div class="stat"><div class="stat-val">660台</div><div class="stat-label">全国平均 / 人口千人あたり</div></div>
+  </div>
+</div>
+
+<div class="section-label">📊 公開中のデータ</div>
+<div class="cards">
+  <a href="/map" class="card">
+    <span class="card-badge badge-live">● 公開中</span>
+    <div class="card-icon">🗺️</div>
+    <div class="card-title">都道府県マップ</div>
+    <div class="card-desc">47都道府県の乗用車・二輪車・貨物車の保有台数を色分け地図で表示。地域ごとの車社会度を一目で比較できます。</div>
+    <div class="card-meta">乗用車 / 二輪車 / 貨物車 <span>5指標 →</span></div>
+  </a>
+  <a href="/cities" class="card">
+    <span class="card-badge badge-new">● NEW</span>
+    <div class="card-icon">🏙️</div>
+    <div class="card-title">都市別ランキング</div>
+    <div class="card-desc">政令指定都市・主要都市の乗用車保有台数と普及率を比較。都市の車依存度がひと目でわかるランキングチャート。</div>
+    <div class="card-meta">20政令指定都市 <span>→</span></div>
+  </a>
+  <a href="/shareholders" class="card">
+    <span class="card-badge badge-new">● NEW</span>
+    <div class="card-icon">📈</div>
+    <div class="card-title">日経225 株主リレーションマップ</div>
+    <div class="card-desc">日経225主要企業の大株主を軸にしたリレーションマップ。誰がどの会社を保有しているか、繋がりをインタラクティブに可視化。</div>
+    <div class="card-meta">10社・12株主 <span>→</span></div>
+  </a>
+</div>
+
+<div class="section-label">🔜 近日公開予定</div>
+<div class="cards">
+  <div class="card coming">
+    <span class="card-badge badge-soon">準備中</span>
+    <div class="card-icon">⚡</div>
+    <div class="card-title">EV・電動車動向</div>
+    <div class="card-desc">電気自動車・ハイブリッド車の普及率を都道府県別に可視化。全国のEV化の進捗を地図で確認。</div>
+  </div>
+  <div class="card coming">
+    <span class="card-badge badge-soon">準備中</span>
+    <div class="card-icon">🏍️</div>
+    <div class="card-title">バイク・二輪車統計</div>
+    <div class="card-desc">原付・小型・中型・大型バイクの地域別保有台数と推移。バイク文化の強い地域を分析。</div>
+  </div>
+  <div class="card coming">
+    <span class="card-badge badge-soon">準備中</span>
+    <div class="card-icon">📈</div>
+    <div class="card-title">10年間の変化トレンド</div>
+    <div class="card-desc">過去10年間の保有台数推移をグラフで表示。人口減少・電動化・都市集中などのトレンドを可視化。</div>
+  </div>
+  <div class="card coming">
+    <span class="card-badge badge-soon">準備中</span>
+    <div class="card-icon">🚛</div>
+    <div class="card-title">物流・商用車マップ</div>
+    <div class="card-desc">トラック・バス・特種車の保有台数と物流拠点を地図上に表示。物流インフラの分布を分析。</div>
+  </div>
+</div>
+
+<footer>
+  出典：一般財団法人 自動車検査登録情報協会（<a href="https://www.airia.or.jp/" target="_blank">AIRIA</a>）「都道府県別・車種別自動車保有台数（軽自動車含む）」令和8年2月末現在<br>
+  人口：2020年国勢調査 ／ 株主データ：各社有価証券報告書・公開情報ベース（2025年3月期）<br>
+  本サイトは公開データを可視化する目的で作成されています
+</footer>
+</body>
+</html>

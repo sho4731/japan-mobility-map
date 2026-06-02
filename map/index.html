@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="都道府県別の自動車・二輪車保有台数を地図で可視化。出典：自動車検査登録情報協会（AIRIA）令和8年2月末現在">
+<title>都道府県マップ | 日本移動経済マップ</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#0a0e1a;color:#e0e8f0;min-height:100vh;display:flex;flex-direction:column}
+header{background:rgba(10,14,26,.97);border-bottom:1px solid #1a2240;padding:0 20px;height:50px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;flex-shrink:0}
+header a{color:#60a5fa;font-size:12px;text-decoration:none}
+header h1{font-size:14px;font-weight:700;color:#fff}
+
+#controls{background:rgba(12,16,30,.95);border-bottom:1px solid #1a2240;padding:10px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
+#controls span{font-size:12px;color:#5a7090;margin-right:4px}
+.btn{padding:5px 14px;border-radius:16px;border:1px solid #2a3460;font-size:11px;cursor:pointer;background:transparent;color:#7a9abf;transition:all .15s;font-family:inherit}
+.btn:hover{border-color:#3a50a0;color:#a0c0e0}
+.btn.active{background:#0f2050;color:#7dd3fc;border-color:#2a5090}
+
+#main{flex:1;display:flex;overflow:hidden}
+#map-container{flex:1;position:relative;overflow:hidden}
+svg{width:100%;height:100%}
+.prefecture{stroke:#0a0e1a;stroke-width:.5;cursor:pointer;transition:opacity .15s}
+.prefecture:hover{opacity:.8;stroke-width:1.5;stroke:#fff}
+.prefecture.selected{stroke:#fff;stroke-width:2}
+
+#legend{position:absolute;bottom:16px;left:16px;background:rgba(10,14,26,.9);border:1px solid #1a2240;border-radius:8px;padding:12px;font-size:10px;color:#6a8aaa}
+#legend-title{font-size:11px;color:#aac;margin-bottom:8px;font-weight:600}
+#legend-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;width:160px;margin:4px 0}
+#legend-labels{display:flex;justify-content:space-between;width:160px}
+
+#detail{width:240px;background:rgba(12,16,30,.97);border-left:1px solid #1a2240;padding:20px 16px;flex-shrink:0;overflow-y:auto}
+#detail h2{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+#detail .hint{font-size:11px;color:#3a5070;line-height:1.6;margin-top:40px;text-align:center}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #111828;font-size:12px}
+.detail-key{color:#5a7090}
+.detail-val{color:#7dd3fc;font-weight:600}
+.detail-bar{height:4px;border-radius:2px;margin-top:4px;background:#38bdf8;transition:width .4s}
+
+footer{padding:12px 20px;border-top:1px solid #111828;font-size:10px;color:#2a3a50;text-align:center;flex-shrink:0}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← ホーム</a>
+  <h1>🗾 都道府県マップ</h1>
+  <span style="font-size:11px;color:#3a5070;margin-left:auto">都道府県別 自動車・二輪車保有統計 ／ 出典：AIRIA 令和8年2月末現在</span>
+</header>
+
+<div id="controls">
+  <span>表示：</span>
+  <button class="btn active" data-metric="car_per1000">🚗 乗用車 / 人口千人</button>
+  <button class="btn" data-metric="car_total">乗用車 総数</button>
+  <button class="btn" data-metric="bike_ratio">🏍 二輪車 比率</button>
+  <button class="btn" data-metric="truck_ratio">🚚 貨物車 比率</button>
+  <button class="btn" data-metric="total">合計 保有台数</button>
+</div>
+
+<div id="main">
+  <div id="map-container">
+    <svg id="map"></svg>
+    <div id="legend">
+      <div id="legend-title">乗用車（人口千人あたり・台）</div>
+      <div id="legend-bar"></div>
+      <div id="legend-labels"><span id="legend-min"></span><span id="legend-max"></span></div>
+    </div>
+  </div>
+  <div id="detail">
+    <div class="hint">🗺 都道府県をクリックすると<br>詳細データを表示します</div>
+  </div>
+</div>
+
+<footer>データ：一般財団法人 自動車検査登録情報協会（AIRIA）「都道府県別・車種別自動車保有台数（軽自動車含む）」令和8年2月末現在 ／ 人口：2020年国勢調査</footer>
+
+<script>
+// ── Prefecture data (AIRIA 令和8年2月末現在・単位：千台) ──
+const PREFS = [
+  {code:"01",name:"北海道",pop:5224,car:2318,bike:107,truck:278,total:2823},
+  {code:"02",name:"青森",pop:1238,car:575,bike:18,truck:84,total:699},
+  {code:"03",name:"岩手",pop:1210,car:584,bike:18,truck:89,total:710},
+  {code:"04",name:"宮城",pop:2302,car:954,bike:41,truck:131,total:1163},
+  {code:"05",name:"秋田",pop:960,car:481,bike:13,truck:69,total:580},
+  {code:"06",name:"山形",pop:1068,car:546,bike:16,truck:82,total:662},
+  {code:"07",name:"福島",pop:1834,car:857,bike:28,truck:127,total:1046},
+  {code:"08",name:"茨城",pop:2867,car:1428,bike:52,truck:199,total:1736},
+  {code:"09",name:"栃木",pop:1933,car:960,bike:39,truck:134,total:1172},
+  {code:"10",name:"群馬",pop:1939,car:998,bike:46,truck:137,total:1220},
+  {code:"11",name:"埼玉",pop:7345,car:2883,bike:176,truck:373,total:3517},
+  {code:"12",name:"千葉",pop:6284,car:2606,bike:148,truck:339,total:3183},
+  {code:"13",name:"東京",pop:13960,car:3068,bike:348,truck:388,total:3969},
+  {code:"14",name:"神奈川",pop:9237,car:3186,bike:205,truck:387,total:3878},
+  {code:"15",name:"新潟",pop:2201,car:1096,bike:32,truck:152,total:1326},
+  {code:"16",name:"富山",pop:1034,car:570,bike:18,truck:77,total:697},
+  {code:"17",name:"石川",pop:1133,car:568,bike:22,truck:79,total:698},
+  {code:"18",name:"福井",pop:767,car:416,bike:13,truck:55,total:506},
+  {code:"19",name:"山梨",pop:810,car:436,bike:19,truck:59,total:534},
+  {code:"20",name:"長野",pop:2048,car:1095,bike:43,truck:148,total:1333},
+  {code:"21",name:"岐阜",pop:1978,car:1052,bike:43,truck:143,total:1281},
+  {code:"22",name:"静岡",pop:3635,car:1804,bike:88,truck:247,total:2199},
+  {code:"23",name:"愛知",pop:7542,car:3589,bike:165,truck:453,total:4370},
+  {code:"24",name:"三重",pop:1770,car:907,bike:35,truck:126,total:1107},
+  {code:"25",name:"滋賀",pop:1413,car:703,bike:27,truck:97,total:857},
+  {code:"26",name:"京都",pop:2578,car:935,bike:50,truck:122,total:1156},
+  {code:"27",name:"大阪",pop:8838,car:2718,bike:181,truck:382,total:3403},
+  {code:"28",name:"兵庫",pop:5466,car:2199,bike:105,truck:292,total:2693},
+  {code:"29",name:"奈良",pop:1324,car:634,bike:22,truck:81,total:774},
+  {code:"30",name:"和歌山",pop:922,car:467,bike:18,truck:66,total:576},
+  {code:"31",name:"鳥取",pop:553,car:287,bike:9,truck:41,total:352},
+  {code:"32",name:"島根",pop:671,car:351,bike:10,truck:50,total:432},
+  {code:"33",name:"岡山",pop:1888,car:938,bike:33,truck:131,total:1142},
+  {code:"34",name:"広島",pop:2800,car:1265,bike:47,truck:177,total:1547},
+  {code:"35",name:"山口",pop:1342,car:636,bike:22,truck:95,total:785},
+  {code:"36",name:"徳島",pop:719,car:375,bike:13,truck:54,total:460},
+  {code:"37",name:"香川",pop:950,car:487,bike:17,truck:68,total:598},
+  {code:"38",name:"愛媛",pop:1335,car:633,bike:22,truck:93,total:775},
+  {code:"39",name:"高知",pop:692,car:356,bike:11,truck:52,total:436},
+  {code:"40",name:"福岡",pop:5135,car:2102,bike:83,truck:280,total:2565},
+  {code:"41",name:"佐賀",pop:811,car:418,bike:14,truck:59,total:511},
+  {code:"42",name:"長崎",pop:1312,car:582,bike:22,truck:89,total:713},
+  {code:"43",name:"熊本",pop:1738,car:839,bike:30,truck:119,total:1024},
+  {code:"44",name:"大分",pop:1124,car:547,bike:19,truck:81,total:670},
+  {code:"45",name:"宮崎",pop:1069,car:531,bike:18,truck:78,total:651},
+  {code:"46",name:"鹿児島",pop:1588,car:727,bike:25,truck:112,total:892},
+  {code:"47",name:"沖縄",pop:1467,car:765,bike:48,truck:73,total:928},
+];
+
+PREFS.forEach(p => {
+  p.car_per1000  = Math.round(p.car / p.pop * 1000);
+  p.bike_ratio   = Math.round(p.bike / p.total * 100 * 10) / 10;
+  p.truck_ratio  = Math.round(p.truck / p.total * 100 * 10) / 10;
+  p.car_total    = p.car;
+});
+
+const METRIC_LABEL = {
+  car_per1000:"乗用車（人口千人あたり・台）",
+  car_total:"乗用車 総保有台数（千台）",
+  bike_ratio:"二輪車 比率（%）",
+  truck_ratio:"貨物車 比率（%）",
+  total:"自動車 合計保有台数（千台）"
+};
+
+let currentMetric = "car_per1000";
+
+// ── D3 Map ──
+const svg = d3.select("#map");
+const g = svg.append("g");
+
+const zoom = d3.zoom().scaleExtent([0.8,8])
+  .on("zoom", e => g.attr("transform", e.transform));
+svg.call(zoom);
+
+// Fetch Japan TopoJSON
+const TOPO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json";
+// Use a reliable Japan topojson source
+const JAPAN_TOPO = "https://raw.githubusercontent.com/dataofjapan/land/master/japan.topojson";
+
+let prefecturePaths;
+let colorScale;
+
+fetch(JAPAN_TOPO)
+  .then(r => r.json())
+  .then(topo => {
+    const features = topojson.feature(topo, topo.objects.japan).features;
+
+    const w = document.getElementById("map-container").clientWidth;
+    const h = document.getElementById("map-container").clientHeight;
+
+    const proj = d3.geoMercator().fitSize([w, h], {type:"FeatureCollection", features});
+    const path = d3.geoPath().projection(proj);
+
+    prefecturePaths = g.selectAll("path")
+      .data(features)
+      .join("path")
+      .attr("class", "prefecture")
+      .attr("d", path)
+      .on("click", (e, d) => showDetail(d.properties.nam_ja || d.properties.name));
+
+    drawColors();
+  })
+  .catch(() => {
+    // Fallback: simple text map
+    svg.append("text").attr("x","50%").attr("y","50%")
+      .attr("text-anchor","middle").attr("fill","#5a7090").attr("font-size","14")
+      .text("地図データの読み込みに失敗しました。インターネット接続を確認してください。");
+  });
+
+function getMetricValue(prefName, metric) {
+  const p = PREFS.find(x => prefName && prefName.includes(x.name.slice(0,2)));
+  return p ? p[metric] : null;
+}
+
+function drawColors() {
+  if (!prefecturePaths) return;
+  const vals = PREFS.map(p => p[currentMetric]);
+  const [minV, maxV] = d3.extent(vals);
+
+  colorScale = d3.scaleSequential()
+    .domain([minV, maxV])
+    .interpolator(d3.interpolateBlues);
+
+  prefecturePaths.attr("fill", d => {
+    const name = d.properties.nam_ja || d.properties.name || "";
+    const p = PREFS.find(x => name.includes(x.name.slice(0,2)));
+    if (!p) return "#1a2240";
+    const norm = (p[currentMetric] - minV) / (maxV - minV);
+    return d3.interpolate("#1a3060","#38bdf8")(norm);
+  });
+
+  // Legend
+  document.getElementById("legend-title").textContent = METRIC_LABEL[currentMetric];
+  const bar = document.getElementById("legend-bar");
+  bar.style.background = "linear-gradient(to right, #1a3060, #38bdf8)";
+  document.getElementById("legend-min").textContent = minV;
+  document.getElementById("legend-max").textContent = maxV;
+}
+
+function showDetail(prefName) {
+  const p = PREFS.find(x => prefName && prefName.includes(x.name.slice(0,2)));
+  if (!p) return;
+  const maxTotal = Math.max(...PREFS.map(x => x.total));
+
+  const detail = document.getElementById("detail");
+  detail.innerHTML = `
+    <h2>${p.name}</h2>
+    <div style="font-size:11px;color:#3a5070;margin-bottom:14px">人口 ${(p.pop/10).toFixed(1)}万人（2020年）</div>
+    ${row("自動車 合計", (p.total*1000).toLocaleString()+"台", p.total/maxTotal)}
+    ${row("乗用車 / 千人", p.car_per1000+"台", p.car_per1000/800)}
+    ${row("乗用車 総数", (p.car*1000).toLocaleString()+"台", p.car/maxTotal)}
+    ${row("二輪車 比率", p.bike_ratio+"%", p.bike_ratio/20)}
+    ${row("貨物車 比率", p.truck_ratio+"%", p.truck_ratio/20)}
+  `;
+
+  prefecturePaths && prefecturePaths.classed("selected", d => {
+    const n = d.properties.nam_ja || d.properties.name || "";
+    return n.includes(p.name.slice(0,2));
+  });
+}
+
+function row(key, val, ratio) {
+  const w = Math.min(100, Math.round(ratio * 100));
+  return `<div class="detail-row"><span class="detail-key">${key}</span><span class="detail-val">${val}</span></div>
+  <div class="detail-bar" style="width:${w}%;background:#38bdf8"></div>`;
+}
+
+// Controls
+document.querySelectorAll(".btn[data-metric]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMetric = btn.dataset.metric;
+    drawColors();
+  });
+});
+</script>
+</body>
+</html>
