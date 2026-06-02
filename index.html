@@ -3,121 +3,324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="日本の自動車・モビリティ・株式市場に関する統計データを地図・グラフで可視化するポータルサイト">
-<title>日本移動経済マップ</title>
+<meta name="description" content="日本の経済・金融・不動産・人口・産業・政治に関する統計データをインタラクティブに可視化するポータルサイト">
+<title>日本情報マップ</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#0a0e1a;color:#e0e8f0;min-height:100vh}
+body{font-family:'Hiragino Sans','Meiryo','Yu Gothic',sans-serif;background:#080b14;color:#e0e8f0;min-height:100vh}
 
-header{background:rgba(10,14,26,.97);border-bottom:1px solid #1a2240;padding:0 24px;height:56px;display:flex;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
-.logo{font-size:15px;font-weight:700;color:#fff;letter-spacing:.04em}
-.logo span{color:#38bdf8}
+/* ── Header ── */
+header{background:rgba(8,11,20,.97);border-bottom:1px solid #141a2e;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-size:16px;font-weight:800;color:#fff;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.logo-icon{font-size:20px}
+.logo em{color:#38bdf8;font-style:normal}
+.header-nav{display:flex;gap:6px}
+.nav-pill{font-size:11px;padding:4px 12px;border-radius:12px;border:1px solid #1a2240;color:#5a7090;text-decoration:none;transition:all .15s}
+.nav-pill:hover{border-color:#2a3860;color:#a0c0e0}
 
-.hero{text-align:center;padding:64px 24px 48px;background:linear-gradient(180deg,#0d1630 0%,#0a0e1a 100%)}
-.hero-icon{font-size:48px;margin-bottom:16px}
-.hero h1{font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:.02em}
-.hero p{color:#6b7fa0;font-size:14px;line-height:1.7;max-width:520px;margin:0 auto 32px}
+/* ── Hero ── */
+.hero{text-align:center;padding:72px 24px 56px;background:radial-gradient(ellipse at 50% 0%, #0d1a3a 0%, #080b14 70%);border-bottom:1px solid #0e1428}
+.hero-tag{display:inline-block;font-size:10px;padding:4px 12px;border-radius:12px;background:#0a1528;border:1px solid #1a2e50;color:#38bdf8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:36px;font-weight:900;color:#fff;letter-spacing:.02em;margin-bottom:12px;line-height:1.2}
+.hero h1 em{color:#38bdf8;font-style:normal}
+.hero p{color:#4a6080;font-size:14px;line-height:1.8;max-width:540px;margin:0 auto 40px}
 
-.stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:8px}
-.stat{text-align:center}
-.stat-val{font-size:26px;font-weight:800;color:#38bdf8}
-.stat-label{font-size:11px;color:#4a6080;margin-top:2px}
+.stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.stat{text-align:center;padding:16px 24px;background:rgba(255,255,255,.02);border:1px solid #101828;border-radius:12px;min-width:120px}
+.stat-val{font-size:24px;font-weight:800;color:#38bdf8;letter-spacing:.02em}
+.stat-label{font-size:10px;color:#3a5070;margin-top:4px;line-height:1.4}
 
-.section-label{text-align:center;font-size:11px;color:#4a5570;letter-spacing:.1em;text-transform:uppercase;margin:48px 0 20px;font-weight:600}
+/* ── Category sections ── */
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
 
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;max-width:1000px;margin:0 auto;padding:0 24px}
+.cat-section{padding:48px 0 24px}
+.cat-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.cat-icon{font-size:20px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cat-title{font-size:15px;font-weight:700;color:#fff}
+.cat-desc{font-size:11px;color:#3a5070;margin-top:2px}
+.cat-line{flex:1;height:1px;background:linear-gradient(to right, #1a2240, transparent)}
 
-.card{background:rgba(255,255,255,.03);border:1px solid #1a2240;border-radius:14px;padding:24px;text-decoration:none;color:inherit;transition:all .2s;display:block;position:relative;overflow:hidden}
-.card:hover{background:rgba(255,255,255,.06);border-color:#2a3860;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.card.coming{opacity:.55;cursor:default}
-.card-badge{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600;letter-spacing:.04em}
-.badge-live{background:#0f3020;color:#4ade80;border:1px solid #1a5030}
-.badge-new{background:#0f1e40;color:#60a5fa;border:1px solid #1a3060}
-.badge-soon{background:#1a1a1a;color:#555;border:1px solid #2a2a2a}
-.card-icon{font-size:28px;margin-bottom:12px}
-.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
-.card-desc{font-size:12px;color:#5a7090;line-height:1.65}
-.card-meta{margin-top:14px;font-size:11px;color:#3a5070;display:flex;align-items:center;gap:6px}
-.card-meta span{color:#38bdf8}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 
-footer{text-align:center;padding:40px 24px;border-top:1px solid #111828;margin-top:60px;font-size:11px;color:#2a3a50;line-height:2}
-footer a{color:#3a5070;text-decoration:none}
+.card{background:rgba(255,255,255,.025);border:1px solid #111828;border-radius:14px;padding:22px;text-decoration:none;color:inherit;transition:all .2s;display:block;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.card:hover{background:rgba(255,255,255,.05);border-color:#1e2a45;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.card:hover::before{opacity:1}
+.card.coming{opacity:.45;cursor:default;pointer-events:none}
+
+.card-badge{position:absolute;top:14px;right:14px;font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:.05em}
+.badge-live{background:#0a2015;color:#4ade80;border:1px solid #14402a}
+.badge-new{background:#0a1530;color:#60a5fa;border:1px solid #1a3060}
+.badge-soon{background:#111318;color:#333a45;border:1px solid #1a1e28}
+.badge-hot{background:#2a1000;color:#fb923c;border:1px solid #5a2a00}
+
+.card-icon{font-size:26px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700;color:#e8f0f8;margin-bottom:6px}
+.card-desc{font-size:11px;color:#4a6080;line-height:1.65}
+.card-meta{margin-top:14px;font-size:10px;color:#2a4060;display:flex;align-items:center;gap:4px}
+.card-meta strong{color:#38bdf8}
+
+/* カテゴリ別アクセントカラー */
+.cat-mobility .cat-icon{background:#0a1e40}
+.cat-mobility .card::before{background:linear-gradient(to right,#3b82f6,#06b6d4)}
+.cat-mobility .card:hover{border-color:#1e3a60}
+
+.cat-finance .cat-icon{background:#1a1000}
+.cat-finance .card::before{background:linear-gradient(to right,#f59e0b,#ef4444)}
+.cat-finance .card:hover{border-color:#3a2800}
+
+.cat-realestate .cat-icon{background:#0a2010}
+.cat-realestate .card::before{background:linear-gradient(to right,#22c55e,#06b6d4)}
+.cat-realestate .card:hover{border-color:#1a3a20}
+
+.cat-population .cat-icon{background:#1a0a30}
+.cat-population .card::before{background:linear-gradient(to right,#a78bfa,#ec4899)}
+.cat-population .card:hover{border-color:#2a1a50}
+
+.cat-business .cat-icon{background:#101a20}
+.cat-business .card::before{background:linear-gradient(to right,#06b6d4,#6366f1)}
+.cat-business .card:hover{border-color:#1a2e40}
+
+.cat-politics .cat-icon{background:#1a0808}
+.cat-politics .card::before{background:linear-gradient(to right,#f87171,#fb923c)}
+.cat-politics .card:hover{border-color:#3a1010}
+
+/* ── Divider ── */
+.section-divider{height:1px;background:linear-gradient(to right,transparent,#1a2240,transparent);margin:16px 0}
+
+/* ── Footer ── */
+footer{text-align:center;padding:48px 24px;border-top:1px solid #0e1428;margin-top:40px;font-size:10px;color:#1e2e40;line-height:2.2}
+footer a{color:#2a4060;text-decoration:none}
+footer a:hover{color:#38bdf8}
+.footer-logo{font-size:14px;font-weight:700;color:#1e3050;margin-bottom:16px}
 </style>
 </head>
 <body>
+
 <header>
-  <div class="logo">🗾 日本<span>移動経済</span>マップ</div>
+  <div class="logo"><span class="logo-icon">🗾</span>日本<em>情報</em>マップ</div>
+  <nav class="header-nav">
+    <a href="/map" class="nav-pill">🚗 交通</a>
+    <a href="/shareholders" class="nav-pill">📈 株主</a>
+  </nav>
 </header>
 
 <div class="hero">
-  <div class="hero-icon">🗾</div>
-  <h1>日本移動経済マップ</h1>
-  <p>Japan Mobility Economic Map<br>自動車・モビリティ・株式市場に関する統計データをインタラクティブに可視化</p>
+  <div class="hero-tag">Japan Data Map Portal</div>
+  <h1>日本<em>情報</em>マップ</h1>
+  <p>経済・金融・不動産・人口・産業・政治まで<br>日本の統計データをインタラクティブに可視化するポータル</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">8,320万台</div><div class="stat-label">全国 自動車総保有台数</div></div>
-    <div class="stat"><div class="stat-val">47</div><div class="stat-label">都道府県</div></div>
-    <div class="stat"><div class="stat-val">20</div><div class="stat-label">政令指定都市</div></div>
-    <div class="stat"><div class="stat-val">660台</div><div class="stat-label">全国平均 / 人口千人あたり</div></div>
+    <div class="stat"><div class="stat-val">6</div><div class="stat-label">カテゴリ</div></div>
+    <div class="stat"><div class="stat-val">3</div><div class="stat-label">公開中コンテンツ</div></div>
+    <div class="stat"><div class="stat-val">47</div><div class="stat-label">都道府県データ</div></div>
+    <div class="stat"><div class="stat-val">随時</div><div class="stat-label">更新</div></div>
   </div>
 </div>
 
-<div class="section-label">📊 公開中のデータ</div>
-<div class="cards">
-  <a href="/map" class="card">
-    <span class="card-badge badge-live">● 公開中</span>
-    <div class="card-icon">🗺️</div>
-    <div class="card-title">都道府県マップ</div>
-    <div class="card-desc">47都道府県の乗用車・二輪車・貨物車の保有台数を色分け地図で表示。地域ごとの車社会度を一目で比較できます。</div>
-    <div class="card-meta">乗用車 / 二輪車 / 貨物車 <span>5指標 →</span></div>
-  </a>
-  <a href="/cities" class="card">
-    <span class="card-badge badge-new">● NEW</span>
-    <div class="card-icon">🏙️</div>
-    <div class="card-title">都市別ランキング</div>
-    <div class="card-desc">政令指定都市・主要都市の乗用車保有台数と普及率を比較。都市の車依存度がひと目でわかるランキングチャート。</div>
-    <div class="card-meta">20政令指定都市 <span>→</span></div>
-  </a>
-  <a href="/shareholders" class="card">
-    <span class="card-badge badge-new">● NEW</span>
-    <div class="card-icon">📈</div>
-    <div class="card-title">日経225 株主リレーションマップ</div>
-    <div class="card-desc">日経225主要企業の大株主を軸にしたリレーションマップ。誰がどの会社を保有しているか、繋がりをインタラクティブに可視化。</div>
-    <div class="card-meta">10社・12株主 <span>→</span></div>
-  </a>
-</div>
+<div class="container">
 
-<div class="section-label">🔜 近日公開予定</div>
-<div class="cards">
-  <div class="card coming">
-    <span class="card-badge badge-soon">準備中</span>
-    <div class="card-icon">⚡</div>
-    <div class="card-title">EV・電動車動向</div>
-    <div class="card-desc">電気自動車・ハイブリッド車の普及率を都道府県別に可視化。全国のEV化の進捗を地図で確認。</div>
+  <!-- 交通・モビリティ -->
+  <div class="cat-section cat-mobility">
+    <div class="cat-header">
+      <div class="cat-icon">🚗</div>
+      <div><div class="cat-title">交通・モビリティ</div><div class="cat-desc">自動車・二輪車・公共交通の統計データ</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <a href="/map" class="card">
+        <span class="card-badge badge-live">● 公開中</span>
+        <div class="card-icon">🗺️</div>
+        <div class="card-title">都道府県マップ</div>
+        <div class="card-desc">47都道府県の乗用車・二輪車・貨物車保有台数を色分け地図で表示。地域の車社会度を比較。</div>
+        <div class="card-meta">乗用車 / 二輪車 / 貨物車 <strong>5指標 →</strong></div>
+      </a>
+      <a href="/cities" class="card">
+        <span class="card-badge badge-live">● 公開中</span>
+        <div class="card-icon">🏙️</div>
+        <div class="card-title">都市別ランキング</div>
+        <div class="card-desc">政令指定都市20都市の乗用車保有台数と普及率ランキング。車依存度をひと目で比較。</div>
+        <div class="card-meta">20政令指定都市 <strong>→</strong></div>
+      </a>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">⚡</div>
+        <div class="card-title">EV・電動車動向</div>
+        <div class="card-desc">電気自動車・ハイブリッド車の都道府県別普及率。全国のEV化の進捗を地図で確認。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🚄</div>
+        <div class="card-title">公共交通マップ</div>
+        <div class="card-desc">鉄道・バスの路線密度と利用者数。車社会 vs 公共交通圏の地域差を可視化。</div>
+      </div>
+    </div>
   </div>
-  <div class="card coming">
-    <span class="card-badge badge-soon">準備中</span>
-    <div class="card-icon">🏍️</div>
-    <div class="card-title">バイク・二輪車統計</div>
-    <div class="card-desc">原付・小型・中型・大型バイクの地域別保有台数と推移。バイク文化の強い地域を分析。</div>
+
+  <div class="section-divider"></div>
+
+  <!-- 金融・経済 -->
+  <div class="cat-section cat-finance">
+    <div class="cat-header">
+      <div class="cat-icon">📈</div>
+      <div><div class="cat-title">金融・経済</div><div class="cat-desc">株式・為替・企業財務・株主構造のデータ</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <a href="/shareholders" class="card">
+        <span class="card-badge badge-new">● NEW</span>
+        <div class="card-icon">🕸️</div>
+        <div class="card-title">日経225 株主リレーションマップ</div>
+        <div class="card-desc">主要企業の大株主を軸にしたネットワーク図。誰がどの会社を保有しているか、繋がりをインタラクティブに可視化。</div>
+        <div class="card-meta">10社・12株主 <strong>→</strong></div>
+      </a>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">💹</div>
+        <div class="card-title">業種別株価トレンド</div>
+        <div class="card-desc">日経225の業種別パフォーマンス推移。セクターローテーションを時系列グラフで確認。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🏦</div>
+        <div class="card-title">企業財務マップ</div>
+        <div class="card-desc">売上・営業利益・ROEを都道府県・業種別に可視化。稼ぐ企業の地図を描く。</div>
+      </div>
+    </div>
   </div>
-  <div class="card coming">
-    <span class="card-badge badge-soon">準備中</span>
-    <div class="card-icon">📈</div>
-    <div class="card-title">10年間の変化トレンド</div>
-    <div class="card-desc">過去10年間の保有台数推移をグラフで表示。人口減少・電動化・都市集中などのトレンドを可視化。</div>
+
+  <div class="section-divider"></div>
+
+  <!-- 不動産・地価 -->
+  <div class="cat-section cat-realestate">
+    <div class="cat-header">
+      <div class="cat-icon">🏠</div>
+      <div><div class="cat-title">不動産・地価</div><div class="cat-desc">地価・マンション価格・賃料の地域別データ</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🗺️</div>
+        <div class="card-title">公示地価マップ</div>
+        <div class="card-desc">国土交通省の公示地価データを地図で可視化。都市部・地方の地価格差をひと目で把握。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🏢</div>
+        <div class="card-title">マンション価格動向</div>
+        <div class="card-desc">主要都市のマンション平均価格推移と年収倍率。購入難易度の地域差を分析。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🔑</div>
+        <div class="card-title">賃料・空室率マップ</div>
+        <div class="card-desc">都道府県・主要都市別の家賃相場と空室率。投資・移住先の検討に。</div>
+      </div>
+    </div>
   </div>
-  <div class="card coming">
-    <span class="card-badge badge-soon">準備中</span>
-    <div class="card-icon">🚛</div>
-    <div class="card-title">物流・商用車マップ</div>
-    <div class="card-desc">トラック・バス・特種車の保有台数と物流拠点を地図上に表示。物流インフラの分布を分析。</div>
+
+  <div class="section-divider"></div>
+
+  <!-- 人口・社会統計 -->
+  <div class="cat-section cat-population">
+    <div class="cat-header">
+      <div class="cat-icon">👥</div>
+      <div><div class="cat-title">人口・社会統計</div><div class="cat-desc">人口動態・少子化・高齢化・移住トレンド</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">📉</div>
+        <div class="card-title">人口減少マップ</div>
+        <div class="card-desc">都道府県・市区町村別の人口増減率を色分け地図で表示。消滅リスクの高い地域を可視化。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">👶</div>
+        <div class="card-title">少子化・出生率マップ</div>
+        <div class="card-desc">合計特殊出生率の地域差と推移。少子化対策の効果を地図で追跡。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🏡</div>
+        <div class="card-title">移住トレンド</div>
+        <div class="card-desc">都市から地方への移住者数の推移。コロナ後の人口移動を地図で確認。</div>
+      </div>
+    </div>
   </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ビジネス・産業 -->
+  <div class="cat-section cat-business">
+    <div class="cat-header">
+      <div class="cat-icon">🏭</div>
+      <div><div class="cat-title">ビジネス・産業</div><div class="cat-desc">産業構造・輸出入・企業分布のデータ</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🚢</div>
+        <div class="card-title">輸出入マップ</div>
+        <div class="card-desc">品目別・相手国別の輸出入額を可視化。貿易構造の変化をインタラクティブに追跡。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🏗️</div>
+        <div class="card-title">産業別GDP分布</div>
+        <div class="card-desc">都道府県別の産業構造と域内GDPの比較。製造業・サービス業の地域偏在を分析。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">💊</div>
+        <div class="card-title">補助金・助成金マップ</div>
+        <div class="card-desc">国・都道府県別の補助金交付実績と産業別分布。公的資金の流れを可視化。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- 政治・行政 -->
+  <div class="cat-section cat-politics">
+    <div class="cat-header">
+      <div class="cat-icon">🏛️</div>
+      <div><div class="cat-title">政治・行政</div><div class="cat-desc">政治献金・選挙・行政支出のデータ</div></div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="cards">
+      <div class="card coming">
+        <span class="card-badge badge-hot">注目</span>
+        <div class="card-icon">💰</div>
+        <div class="card-title">政治献金 相関マップ</div>
+        <div class="card-desc">企業・団体から政治家・政党への献金をネットワーク図で可視化。お金と政治の繋がりを追跡。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">🗳️</div>
+        <div class="card-title">選挙結果マップ</div>
+        <div class="card-desc">衆議院・参議院・首長選挙の結果を選挙区別の地図で表示。政治地図の変遷を追跡。</div>
+      </div>
+      <div class="card coming">
+        <span class="card-badge badge-soon">準備中</span>
+        <div class="card-icon">📋</div>
+        <div class="card-title">行政支出マップ</div>
+        <div class="card-desc">都道府県・市区町村の予算と主要支出項目を比較。財政健全度の地域差を可視化。</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <footer>
-  出典：一般財団法人 自動車検査登録情報協会（<a href="https://www.airia.or.jp/" target="_blank">AIRIA</a>）「都道府県別・車種別自動車保有台数（軽自動車含む）」令和8年2月末現在<br>
-  人口：2020年国勢調査 ／ 株主データ：各社有価証券報告書・公開情報ベース（2025年3月期）<br>
-  本サイトは公開データを可視化する目的で作成されています
+  <div class="footer-logo">🗾 日本情報マップ</div>
+  出典：自動車検査登録情報協会（<a href="https://www.airia.or.jp/" target="_blank">AIRIA</a>）令和8年2月末 ／
+  株主データ：各社有価証券報告書・公開情報ベース（2025年3月期）<br>
+  人口：2020年国勢調査 ／ 本サイトは公開データを可視化する目的で作成されています<br>
+  <span style="color:#111828">© 2025 日本情報マップ</span>
 </footer>
+
 </body>
 </html>
