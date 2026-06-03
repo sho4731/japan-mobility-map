@@ -8,240 +8,383 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#080b14;color:#e0e8f0;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-#header{flex-shrink:0;background:rgba(8,11,20,.97);border-bottom:1px solid #141a2e;padding:0 16px;height:52px;display:flex;align-items:center;gap:12px;z-index:30}
-#header a{color:#38bdf8;font-size:11px;text-decoration:none;white-space:nowrap}
-#header h1{font-size:13px;font-weight:700;color:#fff;white-space:nowrap}
-.hbadge{font-size:10px;padding:2px 8px;border-radius:10px;background:#0a1528;border:1px solid #1a2e50;color:#38bdf8;white-space:nowrap}
-#controls{flex-shrink:0;background:rgba(10,13,22,.95);border-bottom:1px solid #111828;padding:6px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ctrl-label{font-size:10px;color:#3a5070;white-space:nowrap}
-.btn{padding:3px 11px;border-radius:12px;border:1px solid #1e2840;font-size:10px;cursor:pointer;background:transparent;color:#5a7090;transition:all .15s;font-family:inherit;white-space:nowrap}
+#hd{flex-shrink:0;background:rgba(8,11,20,.97);border-bottom:1px solid #141a2e;padding:0 14px;height:48px;display:flex;align-items:center;gap:10px;z-index:30}
+#hd a{color:#38bdf8;font-size:11px;text-decoration:none}
+#hd h1{font-size:13px;font-weight:700;color:#fff}
+.hb{font-size:10px;padding:2px 8px;border-radius:10px;background:#0a1528;border:1px solid #1a2e50;color:#38bdf8}
+#ctrl{flex-shrink:0;background:rgba(10,13,22,.95);border-bottom:1px solid #111828;padding:5px 14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cl{font-size:10px;color:#3a5070;white-space:nowrap}
+.btn{padding:3px 10px;border-radius:12px;border:1px solid #1e2840;font-size:10px;cursor:pointer;background:transparent;color:#5a7090;transition:all .15s;font-family:inherit;white-space:nowrap}
 .btn:hover{border-color:#3a5080;color:#a0c0e0}
-.btn.active{background:#0d1e3a;color:#60a5fa;border-color:#2a4880}
-.btn.active-green{background:#091a12;color:#4ade80;border-color:#1a4028}
-.sep{width:1px;height:18px;background:#1a2030;flex-shrink:0}
-#search-wrap{margin-left:auto;position:relative}
-#search{background:#0d1020;border:1px solid #1e2840;border-radius:16px;padding:4px 12px 4px 28px;font-size:11px;color:#c0d0e0;outline:none;width:160px;font-family:inherit;transition:width .2s}
-#search:focus{border-color:#2a4880;width:200px}
-#search::placeholder{color:#2a3a50}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:#2a3a50;pointer-events:none}
-#insights{flex-shrink:0;background:#050810;border-bottom:1px solid #0e1428;padding:5px 16px;display:flex;gap:8px;overflow-x:auto}
-#insights::-webkit-scrollbar{height:2px}
-.insight{flex-shrink:0;background:rgba(255,255,255,.025);border:1px solid #111828;border-radius:8px;padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s}
-.insight:hover{background:rgba(255,255,255,.05);border-color:#1e2a40}
-.insight-icon{font-size:13px}
-.insight-text{font-size:10px;color:#6a8aaa;white-space:nowrap}
-.insight-text strong{color:#c0d8f0}
-.insight-val{font-size:11px;font-weight:700;white-space:nowrap}
+.btn.a{background:#0d1e3a;color:#60a5fa;border-color:#2a4880}
+.btn.ag{background:#091a12;color:#4ade80;border-color:#1a4028}
+.sp{width:1px;height:16px;background:#1a2030;flex-shrink:0}
+#sw{margin-left:auto;position:relative}
+#srch{background:#0d1020;border:1px solid #1e2840;border-radius:14px;padding:3px 10px 3px 26px;font-size:10.5px;color:#c0d0e0;outline:none;width:150px;font-family:inherit;transition:width .2s}
+#srch:focus{border-color:#2a4880;width:190px}
+#srch::placeholder{color:#2a3a50}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:10px;color:#2a3a50;pointer-events:none}
+#ins{flex-shrink:0;background:#050810;border-bottom:1px solid #0e1428;padding:4px 14px;display:flex;gap:7px;overflow-x:auto}
+#ins::-webkit-scrollbar{height:2px}
+.ic{flex-shrink:0;background:rgba(255,255,255,.025);border:1px solid #111828;border-radius:7px;padding:4px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;font-size:9.5px;color:#6a8aaa;white-space:nowrap}
+.ic:hover{background:rgba(255,255,255,.05);border-color:#1e2a40}
+.ic strong{color:#c0d8f0}
+.iv{font-weight:700}
 #main{flex:1;display:flex;overflow:hidden;min-height:0}
-#graph-area{flex:1;position:relative;overflow:hidden}
+#ga{flex:1;position:relative;overflow:hidden}
 svg{width:100%;height:100%}
-#side{width:260px;flex-shrink:0;background:rgba(10,13,22,.98);border-left:1px solid #111828;display:flex;flex-direction:column;overflow:hidden}
-#side-tabs{display:flex;border-bottom:1px solid #111828;flex-shrink:0}
-.side-tab{flex:1;padding:9px 0;text-align:center;font-size:10px;color:#3a5070;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
-.side-tab.active{color:#60a5fa;border-bottom-color:#3b82f6}
-#side-content{flex:1;overflow-y:auto;padding:8px 0}
-#side-content::-webkit-scrollbar{width:3px}
-#side-content::-webkit-scrollbar-thumb{background:#1a2030}
-.sh-card{padding:9px 12px;border-bottom:1px solid #0a0e18;cursor:pointer;transition:background .1s}
-.sh-card:hover{background:#0d1020}
-.sh-card.sel{background:#091428;border-left:2px solid #3b82f6;padding-left:10px}
-.sh-name{font-size:10.5px;color:#d0e0f0;font-weight:500;display:flex;align-items:center;gap:5px}
-.sh-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sh-meta{font-size:9px;color:#2a4060;margin-top:2px}
-.sh-bars{margin-top:5px;display:flex;flex-direction:column;gap:2px}
-.sh-bar-row{display:flex;align-items:center;gap:5px}
-.sh-bar-lbl{font-size:8.5px;color:#3a5070;width:70px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sh-bar-track{flex:1;height:3px;background:#0d1020;border-radius:2px}
-.sh-bar-fill{height:100%;border-radius:2px}
-.sh-bar-pct{font-size:8.5px;color:#4a80a0;width:30px;text-align:right;flex-shrink:0}
-#cross-panel{padding:12px;display:none}
-#cross-panel.show{display:block}
-.cross-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px}
-.cross-sub{font-size:10px;color:#3a5070;margin-bottom:10px}
-.cross-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #0a0e18;font-size:10.5px}
-.cross-name{color:#c0d0e0}
-.cross-val{color:#38bdf8;font-weight:600}
-#tt{position:fixed;background:rgba(10,13,22,.97);border:1px solid #1e2840;border-radius:10px;padding:11px 13px;font-size:10.5px;pointer-events:none;display:none;max-width:220px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.7)}
-.tt-title{font-size:12.5px;font-weight:700;color:#fff;margin-bottom:3px}
-.tt-type{font-size:9px;margin-bottom:7px}
-.tt-section{font-size:9px;color:#3a5070;letter-spacing:.06em;text-transform:uppercase;margin:5px 0 3px}
-.tt-row{display:flex;justify-content:space-between;gap:8px;margin:2px 0}
-.tt-k{color:#5a7090}.tt-v{color:#38bdf8;font-weight:600}
-#infobar{position:absolute;bottom:12px;left:12px;background:rgba(8,11,20,.85);border:1px solid #111828;border-radius:7px;padding:6px 12px;font-size:9.5px;color:#3a5070;z-index:20;backdrop-filter:blur(4px)}
+#side{width:255px;flex-shrink:0;background:rgba(10,13,22,.98);border-left:1px solid #111828;display:flex;flex-direction:column;overflow:hidden}
+#stabs{display:flex;border-bottom:1px solid #111828;flex-shrink:0}
+.st{flex:1;padding:8px 0;text-align:center;font-size:9.5px;color:#3a5070;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.st.a{color:#60a5fa;border-bottom-color:#3b82f6}
+#sc{flex:1;overflow-y:auto;padding:6px 0}
+#sc::-webkit-scrollbar{width:3px}
+#sc::-webkit-scrollbar-thumb{background:#1a2030}
+.shc{padding:8px 11px;border-bottom:1px solid #0a0e18;cursor:pointer;transition:background .1s}
+.shc:hover{background:#0d1020}
+.shc.sel{background:#091428;border-left:2px solid #3b82f6;padding-left:9px}
+.shn{font-size:10px;color:#d0e0f0;font-weight:500;display:flex;align-items:center;gap:5px}
+.shd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.shm{font-size:9px;color:#2a4060;margin-top:1px}
+.sbr{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.sbrr{display:flex;align-items:center;gap:4px}
+.sbrl{font-size:8px;color:#3a5070;width:64px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbrt{flex:1;height:3px;background:#0d1020;border-radius:2px}
+.sbrf{height:100%;border-radius:2px}
+.sbrp{font-size:8px;color:#4a80a0;width:28px;text-align:right;flex-shrink:0}
+#cp{padding:10px;display:none}
+#cp.show{display:block}
+.ct{font-size:11.5px;font-weight:700;color:#fff;margin-bottom:3px}
+.cs{font-size:9.5px;color:#3a5070;margin-bottom:8px}
+.cr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #0a0e18;font-size:10px}
+.crn{color:#c0d0e0}.crv{color:#38bdf8;font-weight:600}
+#tt{position:fixed;background:rgba(10,13,22,.97);border:1px solid #1e2840;border-radius:9px;padding:10px 12px;font-size:10px;pointer-events:none;display:none;max-width:210px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.7)}
+.tt1{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
+.tt2{font-size:9px;margin-bottom:6px}
+.tts{font-size:8.5px;color:#3a5070;letter-spacing:.05em;text-transform:uppercase;margin:4px 0 2px}
+.ttr{display:flex;justify-content:space-between;gap:7px;margin:2px 0}
+.ttk{color:#5a7090}.ttv{color:#38bdf8;font-weight:600}
+#ib{position:absolute;bottom:10px;left:10px;background:rgba(8,11,20,.85);border:1px solid #111828;border-radius:6px;padding:5px 10px;font-size:9px;color:#3a5070;z-index:20}
 .node circle{cursor:pointer}
-.node text{pointer-events:none;font-size:9.5px;fill:#cdd8e8;text-anchor:middle;dominant-baseline:central}
-.node.company text{font-size:9.5px;font-weight:600;fill:#dde8f5}
-.node.faded{opacity:.06;transition:opacity .25s}
-.node.highlighted circle{filter:drop-shadow(0 0 8px var(--glow,#38bdf8))}
-.link.faded{opacity:.03;transition:opacity .25s}
+.node text{pointer-events:none;font-size:9px;fill:#cdd8e8;text-anchor:middle;dominant-baseline:central}
+.node.company text{font-size:8.5px;font-weight:600;fill:#dde8f5}
+.node.faded{opacity:.05;transition:opacity .2s}
+.node.hl circle{filter:drop-shadow(0 0 8px var(--glow,#38bdf8))}
+.link.faded{opacity:.03;transition:opacity .2s}
 </style>
 </head>
 <body>
-<div id="header">
+<div id="hd">
   <a href="/">← ホーム</a>
   <h1>📈 日経225 株主リレーションマップ</h1>
-  <span class="hbadge">25社 / 18株主 / 2025年3月期</span>
+  <span class="hb">約100社 / 約28株主 / 2025年3月期</span>
 </div>
-<div id="controls">
-  <span class="ctrl-label">業種：</span>
-  <button class="btn active-green" data-sector="all">すべて</button>
-  <button class="btn" data-sector="自動車">自動車</button>
-  <button class="btn" data-sector="電機・IT">電機</button>
-  <button class="btn" data-sector="金融">金融</button>
-  <button class="btn" data-sector="通信・投資">通信</button>
-  <button class="btn" data-sector="商社">商社</button>
-  <button class="btn" data-sector="製薬">製薬</button>
-  <button class="btn" data-sector="その他">その他</button>
-  <div class="sep"></div>
-  <span class="ctrl-label">保有率：</span>
-  <button class="btn active" data-min="0">すべて</button>
-  <button class="btn" data-min="5">5%以上</button>
-  <button class="btn" data-min="10">10%以上</button>
-  <button class="btn" data-min="20">20%以上</button>
-  <div id="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input id="search" type="text" placeholder="企業名・株主名で検索...">
-  </div>
+<div id="ctrl">
+  <span class="cl">業種：</span>
+  <button class="btn ag" data-s="all">すべて</button>
+  <button class="btn" data-s="自動車">自動車</button>
+  <button class="btn" data-s="電機・IT">電機</button>
+  <button class="btn" data-s="金融">金融</button>
+  <button class="btn" data-s="通信">通信</button>
+  <button class="btn" data-s="商社">商社</button>
+  <button class="btn" data-s="製薬">製薬</button>
+  <button class="btn" data-s="不動産">不動産</button>
+  <button class="btn" data-s="小売">小売</button>
+  <button class="btn" data-s="その他">その他</button>
+  <div class="sp"></div>
+  <span class="cl">保有率：</span>
+  <button class="btn a" data-m="0">全て</button>
+  <button class="btn" data-m="5">5%+</button>
+  <button class="btn" data-m="10">10%+</button>
+  <button class="btn" data-m="20">20%+</button>
+  <div id="sw"><span class="si">🔍</span><input id="srch" type="text" placeholder="企業名・株主名を検索..."></div>
 </div>
-<div id="insights">
-  <div class="insight" data-highlight="ロシュ">
-    <span class="insight-icon">🧪</span>
-    <span class="insight-text"><strong>ロシュ</strong>が中外製薬の</span>
-    <span class="insight-val" style="color:#4ade80">59.9%</span>
-    <span class="insight-text">を保有</span>
-  </div>
-  <div class="insight" data-highlight="バークシャー・ハサウェイ">
-    <span class="insight-icon">🎩</span>
-    <span class="insight-text"><strong>バークシャー</strong>が5大商社に</span>
-    <span class="insight-val" style="color:#f59e0b">10%前後</span>
-    <span class="insight-text">ずつ投資</span>
-  </div>
-  <div class="insight" data-highlight="財務大臣（日本政府）">
-    <span class="insight-icon">🏛️</span>
-    <span class="insight-text"><strong>日本政府</strong>がNTTの</span>
-    <span class="insight-val" style="color:#fb923c">33.3%</span>
-    <span class="insight-text">を保有</span>
-  </div>
-  <div class="insight" data-highlight="株式会社ティ・ティ（滝崎武光）">
-    <span class="insight-icon">👤</span>
-    <span class="insight-text"><strong>創業家</strong>がキーエンスの</span>
-    <span class="insight-val" style="color:#34d399">53.1%</span>
-    <span class="insight-text">を支配</span>
-  </div>
-  <div class="insight" data-highlight="日本マスタートラスト信託銀行">
-    <span class="insight-icon">🏦</span>
-    <span class="insight-text"><strong>マスタートラスト</strong>が</span>
-    <span class="insight-val" style="color:#60a5fa">全25社</span>
-    <span class="insight-text">に登場</span>
-  </div>
-  <div class="insight" data-highlight="豊田自動織機">
-    <span class="insight-icon">⚙️</span>
-    <span class="insight-text"><strong>豊田自動織機</strong>がトヨタ・デンソー両方の大株主</span>
-  </div>
+<div id="ins">
+  <div class="ic" data-h="財務大臣（日本政府）"><span>🏛️</span><strong>政府</strong>がNTT/JT/郵政/JR3社を保有 <span class="iv" style="color:#fb923c">5社</span></div>
+  <div class="ic" data-h="ロシュ"><span>🧪</span><strong>ロシュ</strong>→中外製薬 <span class="iv" style="color:#4ade80">59.9%</span></div>
+  <div class="ic" data-h="バークシャー・ハサウェイ"><span>🎩</span><strong>バークシャー</strong>→5大商社 <span class="iv" style="color:#f59e0b">10%前後</span></div>
+  <div class="ic" data-h="株式会社ティ・ティ（滝崎武光）"><span>👤</span><strong>滝崎武光</strong>→キーエンス <span class="iv" style="color:#34d399">53.1%</span></div>
+  <div class="ic" data-h="ソフトバンクグループ（SB株主）"><span>📱</span><strong>SBG</strong>→ソフトバンク <span class="iv" style="color:#22c55e">67%</span></div>
+  <div class="ic" data-h="京成電鉄"><span>🎡</span><strong>京成電鉄</strong>→ディズニー <span class="iv" style="color:#ec4899">20%</span></div>
+  <div class="ic" data-h="トヨタ自動車（SUBARU・マツダ株主）"><span>🚗</span><strong>トヨタ</strong>→SUBARU(20%)+マツダ(5%)</div>
+  <div class="ic" data-h="原子力損害賠償・廃炉等支援機構"><span>☢️</span><strong>政府系機構</strong>→東京電力HD <span class="iv" style="color:#f87171">50%超</span></div>
+  <div class="ic" data-h="日本マスタートラスト信託銀行"><span>🏦</span><strong>マスタートラスト</strong>→全社共通大株主</div>
 </div>
 <div id="main">
-  <div id="graph-area">
-    <svg id="graph"></svg>
-    <div id="infobar">クリック：関連強調 ／ ドラッグ：移動 ／ スクロール：ズーム ／ 背景クリック：リセット</div>
-  </div>
+  <div id="ga"><svg id="graph"></svg><div id="ib">クリック：関連強調 ／ ドラッグ：移動 ／ スクロール：ズーム ／ 背景：リセット</div></div>
   <div id="side">
-    <div id="side-tabs">
-      <div class="side-tab active" data-tab="ranking">株主ランキング</div>
-      <div class="side-tab" data-tab="cross">クロス分析</div>
+    <div id="stabs">
+      <div class="st a" data-t="r">株主ランキング</div>
+      <div class="st" data-t="c">クロス分析</div>
     </div>
-    <div id="side-content">
-      <div id="ranking-panel"></div>
-      <div id="cross-panel"></div>
-    </div>
+    <div id="sc"><div id="rp"></div><div id="cp"></div></div>
   </div>
 </div>
 <div id="tt"></div>
 <script>
-const TC={trust:"#60a5fa",institution:"#93c5fd",gov:"#fb923c",corporate:"#f59e0b",individual:"#34d399",foreign:"#a78bfa",company:"#f87171"};
-const SC={"自動車":"#ef4444","自動車部品":"#f97316","電機・IT":"#f97316","精密機器":"#06b6d4","半導体":"#8b5cf6","化学":"#10b981","金融":"#eab308","通信・投資":"#22c55e","ゲーム":"#ec4899","小売":"#14b8a6","製薬":"#6366f1","商社":"#84cc16","素材":"#78716c"};
-const SHAREHOLDERS=[
+// ── Color maps ──
+const TC={trust:"#60a5fa",institution:"#93c5fd",gov:"#fb923c",govorg:"#f97316",corporate:"#f59e0b",individual:"#34d399",foreign:"#a78bfa",company:"#f87171"};
+const SC={"自動車":"#ef4444","自動車部品":"#f97316","電機・IT":"#f97316","精密機器":"#06b6d4","半導体":"#8b5cf6","化学":"#10b981","素材":"#78716c","金融":"#eab308","通信":"#22c55e","通信・投資":"#22c55e","ゲーム":"#ec4899","小売":"#14b8a6","製薬":"#6366f1","商社":"#84cc16","不動産":"#a78bfa","建設":"#6b7280","インフラ":"#fb923c","交通":"#f59e0b","食品":"#10b981","食品・飲料":"#10b981","その他":"#64748b"};
+
+// ── Shareholders ──
+const SH=[
   {id:"日本マスタートラスト信託銀行",type:"trust",desc:"資産管理専門信託銀行。年金・投信を一元管理。管理資産約704兆円"},
   {id:"日本カストディ銀行",type:"trust",desc:"三菱UFJ・みずほ・農中系。管理資産約684兆円"},
   {id:"日本生命保険",type:"institution",desc:"国内最大級の生命保険・機関投資家"},
-  {id:"明治安田生命保険",type:"institution",desc:"大手生命保険。主要企業の安定株主"},
-  {id:"財務大臣（日本政府）",type:"gov",desc:"NTT法に基づき日本政府が3分の1超を保有"},
+  {id:"明治安田生命保険",type:"institution",desc:"大手生命保険。安定株主として機能"},
+  {id:"財務大臣（日本政府）",type:"gov",desc:"NTT/JT/日本郵政/JR東日本/JR東海の5社を重要インフラとして保有"},
+  {id:"原子力損害賠償・廃炉等支援機構",type:"govorg",desc:"東京電力支援のため設立された政府系機関。東電HD株の50%超を保有"},
   {id:"豊田自動織機",type:"corporate",desc:"トヨタグループ中核。トヨタ・デンソー両社の大株主"},
-  {id:"トヨタ自動車（デンソー株主）",type:"corporate",desc:"デンソーに約24%出資。グループ内相互持合い"},
-  {id:"京セラ",type:"corporate",desc:"KDDIの筆頭株主。稲盛和夫が両社を創業"},
+  {id:"トヨタ自動車（SUBARU・マツダ株主）",type:"corporate",desc:"SUBARU約20%、マツダ約5%を戦略出資。業界横断的な持合い構造"},
+  {id:"日立製作所（日立建機株主）",type:"corporate",desc:"日立建機の親会社として26%を保有。グループ内クロスホールディング"},
+  {id:"ソフトバンクグループ（SB株主）",type:"corporate",desc:"上場子会社ソフトバンク(9434)の67%を保有。親子上場の典型"},
+  {id:"京成電鉄",type:"corporate",desc:"オリエンタルランド（東京ディズニー）の筆頭株主として20%保有。鉄道×テーマパーク"},
   {id:"株式会社ティ・ティ（滝崎武光）",type:"individual",desc:"キーエンス創業者・滝崎武光の資産管理会社。53%超を保有"},
-  {id:"柳井正",type:"individual",desc:"ファーストリテイリング創業者。約16%保有"},
-  {id:"孫正義",type:"individual",desc:"ソフトバンクグループ創業者。約30%保有"},
-  {id:"ルノー",type:"foreign",desc:"仏自動車大手。2023年に保有を43%→約15%に削減"},
+  {id:"柳井正",type:"individual",desc:"ファーストリテイリング創業者・会長兼社長。約16%保有"},
+  {id:"孫正義",type:"individual",desc:"ソフトバンクグループ創業者・会長兼社長。約30%保有"},
+  {id:"永守重信",type:"individual",desc:"ニデック（日本電産）創業者。約27%保有"},
+  {id:"似鳥昭雄",type:"individual",desc:"ニトリHD創業者・会長。約27%保有"},
+  {id:"岡田元也（イオン創業家）",type:"individual",desc:"イオン創業家による保有（岡田家）。約8%保有"},
+  {id:"伊藤興業（伊藤家）",type:"corporate",desc:"セブン&アイHD創業家・伊藤家の資産管理会社。8.16%を保有"},
+  {id:"ルノー",type:"foreign",desc:"仏自動車大手。2023年に保有を43%→約15%に削減。日産との提携継続"},
+  {id:"ロシュ",type:"foreign",desc:"スイス製薬大手。中外製薬と1992年から戦略的提携。59.9%を保有"},
+  {id:"バークシャー・ハサウェイ",type:"foreign",desc:"ウォーレン・バフェット率いる投資会社。2020年から5大商社に10%前後ずつ集中投資"},
   {id:"State Street Bank & Trust",type:"foreign",desc:"米国大手カストディアン銀行"},
   {id:"JP Morgan Chase Bank",type:"foreign",desc:"米国最大の銀行持株会社"},
   {id:"Vanguard Group",type:"foreign",desc:"世界最大級の資産運用会社（AUM約10兆ドル）"},
   {id:"BlackRock Inc.",type:"foreign",desc:"世界最大の資産運用会社（AUM約10兆ドル）"},
-  {id:"バークシャー・ハサウェイ",type:"foreign",desc:"ウォーレン・バフェット率いる投資会社。2020年から5大商社に集中投資"},
-  {id:"ロシュ",type:"foreign",desc:"スイス製薬大手。中外製薬と戦略的提携。59.9%を保有"},
+  {id:"オアシス・マネジメント",type:"foreign",desc:"香港拠点のアクティビスト投資家。花王に5%超を保有し経営改革を要求"},
+  {id:"京セラ（KDDI株主）",type:"corporate",desc:"KDDIの筆頭株主として12%保有。稲盛和夫が両社を創業"},
 ];
-const COMPANIES=[
-  {id:"トヨタ自動車",sector:"自動車",code:"7203",desc:"国内最大時価総額。自動車世界最大グループ"},
-  {id:"ホンダ",sector:"自動車",code:"7267",desc:"二輪・四輪・航空機エンジン。世界展開"},
-  {id:"日産自動車",sector:"自動車",code:"7201",desc:"ルノーと資本提携。EV戦略を推進中"},
-  {id:"デンソー",sector:"自動車部品",code:"6902",desc:"豊田自動織機・トヨタが大株主。世界最大級の自動車部品メーカー"},
-  {id:"ソニーグループ",sector:"電機・IT",code:"6758",desc:"エレクトロニクス・エンタメ・金融の複合企業"},
-  {id:"日立製作所",sector:"電機・IT",code:"6501",desc:"デジタル・グリーン事業へ転換中"},
-  {id:"キーエンス",sector:"精密機器",code:"6861",desc:"FA・センサー世界トップ。創業家が53%超を保有"},
-  {id:"東京エレクトロン",sector:"半導体",code:"8035",desc:"半導体製造装置の世界トップ5。AI需要で急拡大"},
-  {id:"信越化学工業",sector:"化学",code:"4063",desc:"半導体シリコンウェーハ世界首位"},
-  {id:"三菱UFJ\nフィナンシャルG",sector:"金融",code:"8306",desc:"国内最大のメガバンクグループ"},
-  {id:"三井住友FG",sector:"金融",code:"8316",desc:"三井・住友系の統合メガバンク"},
-  {id:"みずほFG",sector:"金融",code:"8411",desc:"第一勧銀・富士・日本興業の統合体"},
-  {id:"ソフトバンク\nグループ",sector:"通信・投資",code:"9984",desc:"テクノロジー投資会社。ビジョンファンドを運営"},
-  {id:"NTT",sector:"通信・投資",code:"9432",desc:"国内最大通信持株会社。政府が3分の1超を保有"},
-  {id:"KDDI",sector:"通信・投資",code:"9433",desc:"京セラが筆頭株主。稲盛和夫が創業"},
-  {id:"任天堂",sector:"ゲーム",code:"7974",desc:"Switch・ゲームソフトで世界的ブランド"},
-  {id:"ファースト\nリテイリング",sector:"小売",code:"9983",desc:"ユニクロ運営。アジア最大のアパレル企業"},
-  {id:"武田薬品工業",sector:"製薬",code:"4502",desc:"国内最大の製薬会社。外国機関投資家が多い"},
-  {id:"中外製薬",sector:"製薬",code:"4519",desc:"ロシュとの戦略提携。ロシュが約60%を保有"},
-  {id:"三菱商事",sector:"商社",code:"8058",desc:"バークシャーが10.8%保有。総合商社最大手"},
-  {id:"三井物産",sector:"商社",code:"8031",desc:"バークシャーが10.4%保有"},
-  {id:"伊藤忠商事",sector:"商社",code:"8001",desc:"バークシャーが10.1%保有。繊維強み"},
-  {id:"丸紅",sector:"商社",code:"8002",desc:"バークシャーが9.8%保有"},
-  {id:"住友商事",sector:"商社",code:"8053",desc:"バークシャーが9.7%保有"},
-  {id:"日本製鉄",sector:"素材",code:"5401",desc:"国内最大の鉄鋼メーカー"},
+
+// ── Companies (100) ──
+const CO=[
+  // 自動車・部品
+  {id:"トヨタ自動車",s:"自動車",c:"7203",d:"国内最大時価総額。自動車世界最大グループ"},
+  {id:"ホンダ",s:"自動車",c:"7267",d:"二輪・四輪世界展開"},
+  {id:"日産自動車",s:"自動車",c:"7201",d:"ルノーと資本提携。EV戦略推進中"},
+  {id:"スズキ",s:"自動車",c:"7269",d:"軽自動車・インド市場強み"},
+  {id:"マツダ",s:"自動車",c:"7261",d:"トヨタが約5%出資。独自の「人馬一体」哲学"},
+  {id:"SUBARU",s:"自動車",c:"7270",d:"トヨタが約20%出資。4WD・安全技術"},
+  {id:"デンソー",s:"自動車部品",c:"6902",d:"豊田自動織機・トヨタが大株主。世界最大級の自動車部品"},
+  {id:"ヤマハ発動機",s:"自動車",c:"7272",d:"二輪・船外機世界首位級"},
+  // 電機・IT
+  {id:"パナソニックHD",s:"電機・IT",c:"6752",d:"家電・車載・FA"},
+  {id:"富士通",s:"電機・IT",c:"6702",d:"ITサービス・デジタルトランスフォーメーション"},
+  {id:"NEC",s:"電機・IT",c:"6701",d:"通信インフラ・社会ソリューション"},
+  {id:"ソニーグループ",s:"電機・IT",c:"6758",d:"エレクトロニクス・エンタメ・金融の複合企業"},
+  {id:"日立製作所",s:"電機・IT",c:"6501",d:"デジタル・グリーン事業へ転換中"},
+  {id:"三菱電機",s:"電機・IT",c:"6503",d:"FA・昇降機・宇宙・防衛"},
+  {id:"ダイキン工業",s:"電機・IT",c:"6367",d:"空調機器の世界首位。グローバル展開"},
+  {id:"富士フイルムHD",s:"電機・IT",c:"4901",d:"写真フィルムから医療・IT事業へ転換成功"},
+  {id:"オムロン",s:"電機・IT",c:"6645",d:"FA機器・制御機器。創業家（立石家）が保有"},
+  {id:"富士電機",s:"電機・IT",c:"6504",d:"電力変換・食品自販機"},
+  // 精密・半導体
+  {id:"キーエンス",s:"精密機器",c:"6861",d:"FA・センサー世界トップ。創業家が53%超を保有"},
+  {id:"東京エレクトロン",s:"半導体",c:"8035",d:"半導体製造装置の世界トップ5。AI需要で急拡大"},
+  {id:"アドバンテスト",s:"半導体",c:"6857",d:"半導体テスト装置で世界首位"},
+  {id:"村田製作所",s:"精密機器",c:"6981",d:"電子部品・セラミックコンデンサ世界首位"},
+  {id:"TDK",s:"精密機器",c:"6762",d:"電子部品・センサ・電池材料"},
+  {id:"ファナック",s:"精密機器",c:"6954",d:"産業用ロボット・NC装置で世界トップ"},
+  {id:"ニデック",s:"精密機器",c:"6594",d:"永守重信創業。小型モータ世界首位"},
+  {id:"京セラ",s:"精密機器",c:"6971",d:"セラミック部品・KDDIの筆頭株主"},
+  {id:"テルモ",s:"精密機器",c:"4543",d:"医療機器・医療用消耗品"},
+  {id:"ルネサス",s:"半導体",c:"6723",d:"車載・産業用マイコン世界大手"},
+  {id:"信越化学工業",s:"化学",c:"4063",d:"半導体シリコンウェーハ世界首位"},
+  // 化学・素材
+  {id:"旭化成",s:"化学",c:"3407",d:"繊維・住宅・医療・電子材料"},
+  {id:"東レ",s:"化学",c:"3402",d:"炭素繊維・ナイロン・逆浸透膜"},
+  {id:"三菱ケミカルG",s:"化学",c:"4188",d:"総合化学・エネルギー材料"},
+  {id:"住友化学",s:"化学",c:"4005",d:"農薬・石油化学・電子材料"},
+  {id:"日本製鉄",s:"素材",c:"5401",d:"国内最大の鉄鋼メーカー"},
+  {id:"住友電気工業",s:"素材",c:"5802",d:"電線・自動車部品・光ファイバ"},
+  {id:"AGC",s:"素材",c:"5201",d:"ガラス・化学・電子材料世界大手"},
+  {id:"川崎重工業",s:"その他",c:"7012",d:"航空・宇宙・鉄道・船舶・オートバイ"},
+  {id:"三菱重工業",s:"その他",c:"7011",d:"航空・エネルギー・防衛"},
+  {id:"IHI",s:"その他",c:"7013",d:"航空エンジン・インフラ・産業機械"},
+  {id:"日立建機",s:"その他",c:"6305",d:"日立製作所が26%保有。建設機械"},
+  // 金融
+  {id:"三菱UFJ\nフィナンシャルG",s:"金融",c:"8306",d:"国内最大のメガバンクグループ"},
+  {id:"三井住友FG",s:"金融",c:"8316",d:"三井・住友系の統合メガバンク"},
+  {id:"みずほFG",s:"金融",c:"8411",d:"第一勧銀・富士・日本興業の統合体"},
+  {id:"野村HD",s:"金融",c:"8604",d:"国内最大の証券グループ"},
+  {id:"大和証券G",s:"金融",c:"8601",d:"大手総合証券"},
+  {id:"東京海上HD",s:"金融",c:"8766",d:"国内最大の損害保険グループ"},
+  {id:"第一生命HD",s:"金融",c:"8750",d:"国内大手生命保険"},
+  {id:"MS&ADIHD",s:"金融",c:"8725",d:"三井住友海上・あいおいニッセイ同和"},
+  {id:"SOMPOホールディングス",s:"金融",c:"8630",d:"損害保険・介護事業"},
+  {id:"オリックス",s:"金融",c:"8591",d:"総合金融・不動産・空港運営"},
+  // 通信・IT
+  {id:"ソフトバンク\nグループ",s:"通信・投資",c:"9984",d:"テクノロジー投資会社。ビジョンファンドを運営"},
+  {id:"NTT",s:"通信",c:"9432",d:"国内最大通信持株会社。政府が3分の1超を保有"},
+  {id:"KDDI",s:"通信",c:"9433",d:"京セラが筆頭株主。au・5G展開"},
+  {id:"ソフトバンク",s:"通信",c:"9434",d:"SBGが67%保有。国内最大級の親子上場"},
+  {id:"リクルートHD",s:"その他",c:"6098",d:"求人・不動産・旅行情報サービス。Indeed等"},
+  // ゲーム・エンタメ
+  {id:"任天堂",s:"ゲーム",c:"7974",d:"Switch・ゲームソフトで世界的ブランド"},
+  {id:"オリエンタルランド",s:"その他",c:"4661",d:"東京ディズニーリゾート運営。京成電鉄が20%保有"},
+  {id:"セコム",s:"その他",c:"9735",d:"警備・防犯サービス国内首位"},
+  // 小売
+  {id:"ファースト\nリテイリング",s:"小売",c:"9983",d:"ユニクロ運営。アジア最大のアパレル企業"},
+  {id:"セブン&アイHD",s:"小売",c:"3382",d:"7-Eleven・そごう西武等。創業家が8%保有"},
+  {id:"イオン",s:"小売",c:"8267",d:"国内最大のスーパー・SC。岡田創業家が保有"},
+  {id:"ニトリHD",s:"小売",c:"9843",d:"似鳥昭雄創業者が約27%保有。家具小売"},
+  // 製薬・医療
+  {id:"武田薬品工業",s:"製薬",c:"4502",d:"国内最大の製薬。外国機関投資家比率が高い"},
+  {id:"中外製薬",s:"製薬",c:"4519",d:"ロシュとの戦略提携。ロシュが約60%を保有"},
+  {id:"第一三共",s:"製薬",c:"4568",d:"抗体薬物複合体（ADC）で世界注目"},
+  {id:"アステラス製薬",s:"製薬",c:"4503",d:"泌尿器・眼科領域のグローバル製薬"},
+  {id:"大塚HD",s:"製薬",c:"4578",d:"大塚家が創業家株主。エビリファイなど"},
+  {id:"小野薬品",s:"製薬",c:"4528",d:"オプジーボ（免疫チェックポイント阻害剤）"},
+  // 商社
+  {id:"三菱商事",s:"商社",c:"8058",d:"バークシャーが10.8%保有。総合商社最大手"},
+  {id:"三井物産",s:"商社",c:"8031",d:"バークシャーが10.4%保有。資源・エネルギー強み"},
+  {id:"伊藤忠商事",s:"商社",c:"8001",d:"バークシャーが10.1%保有。繊維・食品強み"},
+  {id:"丸紅",s:"商社",c:"8002",d:"バークシャーが9.8%保有。穀物・農業強み"},
+  {id:"住友商事",s:"商社",c:"8053",d:"バークシャーが9.7%保有"},
+  // 食品・飲料
+  {id:"JT\n日本たばこ産業",s:"食品・飲料",c:"2914",d:"財務大臣が37.55%保有。海外たばこM&Aで世界3位"},
+  {id:"味の素",s:"食品・飲料",c:"2802",d:"うま味・アミノ酸で世界展開"},
+  {id:"キリンHD",s:"食品・飲料",c:"2503",d:"ビール・医薬品・ヘルスサイエンス"},
+  {id:"アサヒGHD",s:"食品・飲料",c:"2502",d:"ビール・飲料・食品"},
+  {id:"花王",s:"食品・飲料",c:"4452",d:"日用品・化粧品。アクティビスト（オアシス）が5%+"},
+  {id:"資生堂",s:"その他",c:"4911",d:"国内最大の化粧品メーカー"},
+  // 不動産
+  {id:"三菱地所",s:"不動産",c:"8802",d:"丸の内を中心とした都市開発"},
+  {id:"三井不動産",s:"不動産",c:"8801",d:"日本橋・柏の葉等の複合開発"},
+  {id:"住友不動産",s:"不動産",c:"8830",d:"オフィス賃貸・マンション分譲"},
+  {id:"大和ハウス工業",s:"不動産",c:"1925",d:"住宅・物流施設・商業施設"},
+  {id:"積水ハウス",s:"不動産",c:"1928",d:"注文住宅・アパート・海外展開"},
+  // 建設
+  {id:"鹿島建設",s:"建設",c:"1812",d:"スーパーゼネコン・原子力・海外"},
+  {id:"大成建設",s:"建設",c:"1801",d:"スーパーゼネコン・東京五輪施設"},
+  {id:"清水建設",s:"建設",c:"1803",d:"スーパーゼネコン・ICT建設"},
+  // インフラ・エネルギー
+  {id:"日本郵政",s:"インフラ",c:"6178",d:"財務大臣が34%保有。郵便・銀行・保険"},
+  {id:"JR東日本",s:"交通",c:"9020",d:"財務大臣が35%保有。東日本エリア鉄道"},
+  {id:"JR東海",s:"交通",c:"9022",d:"財務大臣が33%保有。新幹線・リニア"},
+  {id:"ANAHD",s:"交通",c:"9202",d:"国内最大の航空グループ"},
+  {id:"日本航空",s:"交通",c:"9201",d:"2010年経営破綻から再建。国際線強み"},
+  {id:"東京電力HD",s:"インフラ",c:"9501",d:"原子力損害賠償機構が50%超を保有。2011年福島事故"},
+  {id:"関西電力",s:"インフラ",c:"9503",d:"原子力依存度高い。関西エリア"},
+  {id:"中部電力",s:"インフラ",c:"9502",d:"中部エリア。浜岡原発停止中"},
+  {id:"東京ガス",s:"インフラ",c:"9531",d:"首都圏ガス供給・電力・LNG"},
 ];
-const LINKS_RAW=[
+
+// ── Links (全接続データ) ──
+// format: [株主ID, 企業ID, 保有率]
+const LR=[
+  // ━━ マスタートラスト（全社）━━
   ["日本マスタートラスト信託銀行","トヨタ自動車",13.84],
   ["日本マスタートラスト信託銀行","ホンダ",17.77],
   ["日本マスタートラスト信託銀行","日産自動車",12.5],
+  ["日本マスタートラスト信託銀行","スズキ",16.26],
+  ["日本マスタートラスト信託銀行","マツダ",13.0],
+  ["日本マスタートラスト信託銀行","SUBARU",14.5],
   ["日本マスタートラスト信託銀行","デンソー",11.8],
+  ["日本マスタートラスト信託銀行","ヤマハ発動機",12.5],
+  ["日本マスタートラスト信託銀行","パナソニックHD",15.42],
+  ["日本マスタートラスト信託銀行","富士通",16.0],
+  ["日本マスタートラスト信託銀行","NEC",14.5],
   ["日本マスタートラスト信託銀行","ソニーグループ",18.50],
   ["日本マスタートラスト信託銀行","日立製作所",16.91],
+  ["日本マスタートラスト信託銀行","三菱電機",14.8],
+  ["日本マスタートラスト信託銀行","ダイキン工業",20.52],
+  ["日本マスタートラスト信託銀行","富士フイルムHD",14.2],
+  ["日本マスタートラスト信託銀行","オムロン",14.0],
+  ["日本マスタートラスト信託銀行","富士電機",11.5],
   ["日本マスタートラスト信託銀行","キーエンス",15.07],
   ["日本マスタートラスト信託銀行","東京エレクトロン",25.23],
+  ["日本マスタートラスト信託銀行","アドバンテスト",23.5],
+  ["日本マスタートラスト信託銀行","村田製作所",14.2],
+  ["日本マスタートラスト信託銀行","TDK",14.0],
+  ["日本マスタートラスト信託銀行","ファナック",24.37],
+  ["日本マスタートラスト信託銀行","ニデック",12.5],
+  ["日本マスタートラスト信託銀行","京セラ",13.8],
+  ["日本マスタートラスト信託銀行","テルモ",16.0],
+  ["日本マスタートラスト信託銀行","ルネサス",14.0],
   ["日本マスタートラスト信託銀行","信越化学工業",13.50],
+  ["日本マスタートラスト信託銀行","旭化成",12.5],
+  ["日本マスタートラスト信託銀行","東レ",13.2],
+  ["日本マスタートラスト信託銀行","三菱ケミカルG",14.0],
+  ["日本マスタートラスト信託銀行","住友化学",12.0],
+  ["日本マスタートラスト信託銀行","日本製鉄",15.00],
+  ["日本マスタートラスト信託銀行","住友電気工業",13.0],
+  ["日本マスタートラスト信託銀行","AGC",13.5],
+  ["日本マスタートラスト信託銀行","川崎重工業",14.0],
+  ["日本マスタートラスト信託銀行","三菱重工業",14.5],
+  ["日本マスタートラスト信託銀行","IHI",13.5],
+  ["日本マスタートラスト信託銀行","日立建機",12.0],
   ["日本マスタートラスト信託銀行","三菱UFJ\nフィナンシャルG",17.95],
   ["日本マスタートラスト信託銀行","三井住友FG",16.80],
   ["日本マスタートラスト信託銀行","みずほFG",14.20],
+  ["日本マスタートラスト信託銀行","野村HD",8.5],
+  ["日本マスタートラスト信託銀行","大和証券G",15.0],
+  ["日本マスタートラスト信託銀行","東京海上HD",16.56],
+  ["日本マスタートラスト信託銀行","第一生命HD",15.23],
+  ["日本マスタートラスト信託銀行","MS&ADIHD",16.0],
+  ["日本マスタートラスト信託銀行","SOMPOホールディングス",16.0],
+  ["日本マスタートラスト信託銀行","オリックス",16.0],
   ["日本マスタートラスト信託銀行","ソフトバンク\nグループ",17.12],
   ["日本マスタートラスト信託銀行","NTT",8.40],
   ["日本マスタートラスト信託銀行","KDDI",16.37],
+  ["日本マスタートラスト信託銀行","ソフトバンク",8.5],
+  ["日本マスタートラスト信託銀行","リクルートHD",21.93],
   ["日本マスタートラスト信託銀行","任天堂",16.29],
+  ["日本マスタートラスト信託銀行","オリエンタルランド",13.0],
+  ["日本マスタートラスト信託銀行","セコム",14.5],
   ["日本マスタートラスト信託銀行","ファースト\nリテイリング",19.83],
+  ["日本マスタートラスト信託銀行","セブン&アイHD",16.48],
+  ["日本マスタートラスト信託銀行","イオン",10.5],
+  ["日本マスタートラスト信託銀行","ニトリHD",10.0],
   ["日本マスタートラスト信託銀行","武田薬品工業",14.80],
   ["日本マスタートラスト信託銀行","中外製薬",8.50],
+  ["日本マスタートラスト信託銀行","第一三共",16.0],
+  ["日本マスタートラスト信託銀行","アステラス製薬",14.5],
+  ["日本マスタートラスト信託銀行","大塚HD",11.0],
+  ["日本マスタートラスト信託銀行","小野薬品",14.0],
   ["日本マスタートラスト信託銀行","三菱商事",14.20],
   ["日本マスタートラスト信託銀行","三井物産",15.80],
   ["日本マスタートラスト信託銀行","伊藤忠商事",13.50],
   ["日本マスタートラスト信託銀行","丸紅",14.00],
   ["日本マスタートラスト信託銀行","住友商事",14.50],
-  ["日本マスタートラスト信託銀行","日本製鉄",15.00],
+  ["日本マスタートラスト信託銀行","JT\n日本たばこ産業",7.5],
+  ["日本マスタートラスト信託銀行","味の素",14.5],
+  ["日本マスタートラスト信託銀行","キリンHD",14.0],
+  ["日本マスタートラスト信託銀行","アサヒGHD",12.5],
+  ["日本マスタートラスト信託銀行","花王",14.0],
+  ["日本マスタートラスト信託銀行","資生堂",12.0],
+  ["日本マスタートラスト信託銀行","三菱地所",14.5],
+  ["日本マスタートラスト信託銀行","三井不動産",14.5],
+  ["日本マスタートラスト信託銀行","住友不動産",13.5],
+  ["日本マスタートラスト信託銀行","大和ハウス工業",13.5],
+  ["日本マスタートラスト信託銀行","積水ハウス",12.5],
+  ["日本マスタートラスト信託銀行","鹿島建設",12.0],
+  ["日本マスタートラスト信託銀行","大成建設",13.0],
+  ["日本マスタートラスト信託銀行","清水建設",14.0],
+  ["日本マスタートラスト信託銀行","日本郵政",8.0],
+  ["日本マスタートラスト信託銀行","JR東日本",8.5],
+  ["日本マスタートラスト信託銀行","JR東海",8.0],
+  ["日本マスタートラスト信託銀行","ANAHD",13.5],
+  ["日本マスタートラスト信託銀行","日本航空",13.0],
+  ["日本マスタートラスト信託銀行","東京電力HD",5.0],
+  ["日本マスタートラスト信託銀行","関西電力",15.0],
+  ["日本マスタートラスト信託銀行","中部電力",14.5],
+  ["日本マスタートラスト信託銀行","東京ガス",14.0],
+  // ━━ 日本カストディ銀行 ━━
   ["日本カストディ銀行","トヨタ自動車",6.22],
   ["日本カストディ銀行","ホンダ",6.49],
   ["日本カストディ銀行","日産自動車",5.80],
+  ["日本カストディ銀行","スズキ",5.5],
   ["日本カストディ銀行","デンソー",5.20],
   ["日本カストディ銀行","ソニーグループ",6.50],
   ["日本カストディ銀行","日立製作所",7.20],
   ["日本カストディ銀行","キーエンス",13.24],
   ["日本カストディ銀行","東京エレクトロン",8.10],
+  ["日本カストディ銀行","アドバンテスト",7.5],
   ["日本カストディ銀行","三菱UFJ\nフィナンシャルG",5.80],
   ["日本カストディ銀行","三井住友FG",6.20],
+  ["日本カストディ銀行","みずほFG",5.5],
   ["日本カストディ銀行","ソフトバンク\nグループ",6.99],
   ["日本カストディ銀行","NTT",4.90],
   ["日本カストディ銀行","KDDI",6.00],
@@ -251,33 +394,70 @@ const LINKS_RAW=[
   ["日本カストディ銀行","三菱商事",6.00],
   ["日本カストディ銀行","三井物産",6.20],
   ["日本カストディ銀行","日本製鉄",6.00],
+  ["日本カストディ銀行","ダイキン工業",6.5],
+  ["日本カストディ銀行","東京海上HD",6.0],
+  ["日本カストディ銀行","リクルートHD",5.8],
+  // ━━ 日本生命 ━━
   ["日本生命保険","トヨタ自動車",4.85],
   ["日本生命保険","ホンダ",1.35],
   ["日本生命保険","三菱UFJ\nフィナンシャルG",3.20],
   ["日本生命保険","三井住友FG",2.80],
   ["日本生命保険","NTT",2.10],
+  ["日本生命保険","日本製鉄",2.5],
+  // ━━ 明治安田生命 ━━
   ["明治安田生命保険","ホンダ",3.18],
   ["明治安田生命保険","三菱UFJ\nフィナンシャルG",2.50],
+  ["明治安田生命保険","三菱地所",2.5],
+  // ━━ 財務大臣（日本政府）━━
   ["財務大臣（日本政府）","NTT",33.30],
+  ["財務大臣（日本政府）","JT\n日本たばこ産業",37.55],
+  ["財務大臣（日本政府）","日本郵政",34.00],
+  ["財務大臣（日本政府）","JR東日本",35.00],
+  ["財務大臣（日本政府）","JR東海",33.00],
+  // ━━ 原子力損害賠償・廃炉等支援機構 ━━
+  ["原子力損害賠償・廃炉等支援機構","東京電力HD",50.10],
+  // ━━ 特殊クロス持合い ━━
   ["豊田自動織機","トヨタ自動車",9.14],
   ["豊田自動織機","デンソー",24.70],
-  ["トヨタ自動車（デンソー株主）","デンソー",24.00],
-  ["京セラ","KDDI",12.00],
+  ["トヨタ自動車（SUBARU・マツダ株主）","SUBARU",20.00],
+  ["トヨタ自動車（SUBARU・マツダ株主）","マツダ",5.00],
+  ["日立製作所（日立建機株主）","日立建機",26.00],
+  ["ソフトバンクグループ（SB株主）","ソフトバンク",67.00],
+  ["京成電鉄","オリエンタルランド",20.05],
+  ["京セラ（KDDI株主）","KDDI",12.00],
+  // ━━ 個人・創業家 ━━
   ["株式会社ティ・ティ（滝崎武光）","キーエンス",53.12],
   ["柳井正","ファースト\nリテイリング",16.19],
   ["孫正義","ソフトバンク\nグループ",29.95],
+  ["永守重信","ニデック",27.00],
+  ["似鳥昭雄","ニトリHD",27.00],
+  ["岡田元也（イオン創業家）","イオン",8.00],
+  ["伊藤興業（伊藤家）","セブン&アイHD",8.16],
   ["ルノー","日産自動車",15.00],
+  // ━━ バークシャー（5大商社）━━
+  ["バークシャー・ハサウェイ","三菱商事",10.80],
+  ["バークシャー・ハサウェイ","三井物産",10.40],
+  ["バークシャー・ハサウェイ","伊藤忠商事",10.10],
+  ["バークシャー・ハサウェイ","丸紅",9.80],
+  ["バークシャー・ハサウェイ","住友商事",9.70],
+  // ━━ ロシュ ━━
+  ["ロシュ","中外製薬",59.89],
+  // ━━ State Street ━━
   ["State Street Bank & Trust","トヨタ自動車",2.10],
   ["State Street Bank & Trust","ホンダ",5.41],
   ["State Street Bank & Trust","ソフトバンク\nグループ",2.48],
   ["State Street Bank & Trust","東京エレクトロン",3.10],
   ["State Street Bank & Trust","日立製作所",2.80],
   ["State Street Bank & Trust","武田薬品工業",3.20],
+  ["State Street Bank & Trust","三菱商事",2.50],
+  // ━━ JP Morgan ━━
   ["JP Morgan Chase Bank","ソニーグループ",3.20],
   ["JP Morgan Chase Bank","ソフトバンク\nグループ",3.46],
   ["JP Morgan Chase Bank","東京エレクトロン",2.90],
   ["JP Morgan Chase Bank","ホンダ",1.60],
   ["JP Morgan Chase Bank","三菱商事",2.40],
+  ["JP Morgan Chase Bank","第一三共",2.80],
+  // ━━ Vanguard ━━
   ["Vanguard Group","トヨタ自動車",1.80],
   ["Vanguard Group","ソニーグループ",2.40],
   ["Vanguard Group","東京エレクトロン",2.10],
@@ -285,187 +465,241 @@ const LINKS_RAW=[
   ["Vanguard Group","武田薬品工業",3.40],
   ["Vanguard Group","三菱商事",3.20],
   ["Vanguard Group","三井物産",2.80],
+  ["Vanguard Group","リクルートHD",3.0],
+  // ━━ BlackRock ━━
   ["BlackRock Inc.","トヨタ自動車",2.20],
   ["BlackRock Inc.","ソニーグループ",3.10],
   ["BlackRock Inc.","東京エレクトロン",3.50],
   ["BlackRock Inc.","任天堂",2.80],
   ["BlackRock Inc.","武田薬品工業",5.20],
   ["BlackRock Inc.","三菱商事",2.80],
-  ["バークシャー・ハサウェイ","三菱商事",10.80],
-  ["バークシャー・ハサウェイ","三井物産",10.40],
-  ["バークシャー・ハサウェイ","伊藤忠商事",10.10],
-  ["バークシャー・ハサウェイ","丸紅",9.80],
-  ["バークシャー・ハサウェイ","住友商事",9.70],
-  ["ロシュ","中外製薬",59.89],
+  ["BlackRock Inc.","リクルートHD",3.2],
+  // ━━ オアシス（活動家）━━
+  ["オアシス・マネジメント","花王",5.10],
 ];
-function shSize(id){const t=LINKS_RAW.filter(l=>l[0]===id).reduce((a,l)=>a+l[2],0);return Math.min(46,Math.max(12,Math.sqrt(t)*3.2));}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ── Build nodes ──
+function shSz(id){const t=LR.filter(l=>l[0]===id).reduce((a,l)=>a+l[2],0);return Math.min(44,Math.max(10,Math.sqrt(t)*2.8));}
 const nodes=[
-  ...SHAREHOLDERS.map(s=>({...s,isCompany:false,size:shSize(s.id),holdCount:LINKS_RAW.filter(l=>l[0]===s.id).length})),
-  ...COMPANIES.map(c=>({...c,isCompany:true,type:"company",size:24})),
+  ...SH.map(s=>({...s,isC:false,size:shSz(s.id),hc:LR.filter(l=>l[0]===s.id).length})),
+  ...CO.map(c=>({id:c.id,s:c.s,code:c.c,desc:c.d,isC:true,type:"company",size:20})),
 ];
-const links=LINKS_RAW.map(([s,t,v])=>({source:s,target:t,value:v}));
-let activeSector="all",minPct=0,searchQ="",activeTab="ranking";
-function matchSector(s){if(activeSector==="all")return true;if(activeSector==="その他")return!["自動車","自動車部品","電機・IT","精密機器","半導体","化学","金融","通信・投資","ゲーム","小売","製薬","商社","素材"].includes(s);return s===activeSector;}
-function buildRanking(){
-  const el=document.getElementById("ranking-panel");el.innerHTML="";
-  const maxV=Math.max(...LINKS_RAW.map(l=>l[2]));
-  const filtered=SHAREHOLDERS
-    .map(sh=>({sh,links:LINKS_RAW.filter(l=>l[0]===sh.id&&l[2]>=minPct&&(activeSector==="all"||COMPANIES.find(c=>c.id===l[1]&&matchSector(c.sector))))}))
-    .filter(x=>x.links.length>0)
-    .sort((a,b)=>b.links.length-a.links.length||b.links.reduce((s,l)=>s+l[2],0)-a.links.reduce((s,l)=>s+l[2],0));
-  filtered.forEach(({sh,links:hlds})=>{
-    const card=document.createElement("div");card.className="sh-card";card.dataset.id=sh.id;
-    const total=hlds.reduce((s,l)=>s+l[2],0).toFixed(1);
-    const color=TC[sh.type]||"#888";
-    const barsHtml=hlds.sort((a,b)=>b[2]-a[2]).slice(0,4).map(l=>{
-      const co=COMPANIES.find(c=>c.id===l[1]);const c2=co?SC[co.sector]||"#60a5fa":"#60a5fa";
-      return`<div class="sh-bar-row"><div class="sh-bar-lbl" title="${l[1].replace('\n',' ')}">${l[1].replace('\n',' ')}</div><div class="sh-bar-track"><div class="sh-bar-fill" style="width:${Math.min(100,l[2]/maxV*100).toFixed(1)}%;background:${c2}"></div></div><div class="sh-bar-pct">${l[2]}%</div></div>`;
+const links=LR.map(([s,t,v])=>({source:s,target:t,value:v}));
+
+// ── State ──
+let AS="all",MP=0,SQ="",AT="r";
+
+function ms(sec){
+  if(AS==="all")return true;
+  if(AS==="その他")return!["自動車","自動車部品","電機・IT","精密機器","半導体","化学","素材","金融","通信","通信・投資","ゲーム","小売","製薬","商社","不動産","建設","インフラ","交通","食品","食品・飲料"].includes(sec);
+  return sec===AS||sec.startsWith(AS);
+}
+
+// ── Side panel ──
+function buildR(){
+  const el=document.getElementById("rp");el.innerHTML="";
+  const mxV=Math.max(...LR.map(l=>l[2]));
+  const fd=SH
+    .map(sh=>({sh,ls:LR.filter(l=>l[0]===sh.id&&l[2]>=MP&&(AS==="all"||CO.find(c=>c.id===l[1]&&ms(c.s))))}))
+    .filter(x=>x.ls.length>0)
+    .sort((a,b)=>b.ls.length-a.ls.length||b.ls.reduce((s,l)=>s+l[2],0)-a.ls.reduce((s,l)=>s+l[2],0));
+  fd.forEach(({sh,ls})=>{
+    const card=document.createElement("div");card.className="shc";card.dataset.id=sh.id;
+    const tot=ls.reduce((s,l)=>s+l[2],0).toFixed(1),col=TC[sh.type]||"#888";
+    const bars=ls.sort((a,b)=>b[2]-a[2]).slice(0,4).map(l=>{
+      const co=CO.find(c=>c.id===l[1]);const cc=co?SC[co.s]||"#60a5fa":"#60a5fa";
+      return`<div class="sbrr"><div class="sbrl" title="${l[1].replace('\n',' ')}">${l[1].replace('\n',' ')}</div><div class="sbrt"><div class="sbrf" style="width:${Math.min(100,l[2]/mxV*100).toFixed(1)}%;background:${cc}"></div></div><div class="sbrp">${l[2]}%</div></div>`;
     }).join('');
-    const typeLbl={trust:"信託・機関",gov:"政府系",corporate:"事業会社",individual:"個人",foreign:"外国機関",institution:"保険・機関"}[sh.type]||"";
-    card.innerHTML=`<div class="sh-name"><div class="sh-dot" style="background:${color}"></div>${sh.id.replace('\n',' ')}</div><div class="sh-meta">${typeLbl} / ${hlds.length}社 / 合計${total}%</div><div class="sh-bars">${barsHtml}</div>`;
-    card.addEventListener("click",()=>highlightNode(sh.id,card));
+    const tl={trust:"信託",gov:"政府系",govorg:"政府機関",corporate:"事業会社",individual:"個人",foreign:"外国機関",institution:"保険"}[sh.type]||"";
+    card.innerHTML=`<div class="shn"><div class="shd" style="background:${col}"></div>${sh.id.replace('\n',' ')}</div><div class="shm">${tl} / ${ls.length}社 / 計${tot}%</div><div class="sbr">${bars}</div>`;
+    card.addEventListener("click",()=>hlNode(sh.id,card));
     el.appendChild(card);
   });
 }
-function showCross(nodeId){
-  document.querySelectorAll(".side-tab").forEach(t=>t.classList.remove("active"));
-  document.querySelector('[data-tab="cross"]').classList.add("active");
-  activeTab="cross";
-  document.getElementById("ranking-panel").style.display="none";
-  const cp=document.getElementById("cross-panel");cp.style.display="block";
-  const sh=SHAREHOLDERS.find(s=>s.id===nodeId);
-  const co=COMPANIES.find(c=>c.id===nodeId);
+
+function showCross(nid){
+  document.querySelectorAll(".st").forEach(t=>t.classList.remove("a"));
+  document.querySelector('[data-t="c"]').classList.add("a");
+  AT="c";
+  document.getElementById("rp").style.display="none";
+  const cp=document.getElementById("cp");cp.style.display="block";
+  const sh=SH.find(s=>s.id===nid),co=CO.find(c=>c.id===nid);
   cp.innerHTML="";
   if(sh){
-    const hlds=LINKS_RAW.filter(l=>l[0]===nodeId).sort((a,b)=>b[2]-a[2]);
-    cp.innerHTML=`<div class="cross-title">${nodeId.replace('\n',' ')}</div><div class="cross-sub">${{trust:"信託・機関投資家",gov:"政府系株主",corporate:"事業会社株主",individual:"個人（創業家）",foreign:"外国機関投資家",institution:"保険会社"}[sh.type]||""} / ${hlds.length}社保有</div>${hlds.map(l=>`<div class="cross-row"><span class="cross-name">${l[1].replace('\n',' ')}</span><span class="cross-val">${l[2]}%</span></div>`).join('')}`;
+    const ls=LR.filter(l=>l[0]===nid).sort((a,b)=>b[2]-a[2]);
+    cp.innerHTML=`<div class="ct">${nid.replace('\n',' ')}</div><div class="cs">${{trust:"信託・機関投資家",gov:"政府系株主",govorg:"政府系機関",corporate:"事業会社株主",individual:"個人（創業家）",foreign:"外国機関投資家",institution:"保険会社"}[sh.type]||""} / ${ls.length}社保有</div>${ls.map(l=>`<div class="cr"><span class="crn">${l[1].replace('\n',' ')}</span><span class="crv">${l[2]}%</span></div>`).join('')}`;
   }else if(co){
-    const inv=LINKS_RAW.filter(l=>l[1]===nodeId).sort((a,b)=>b[2]-a[2]);
-    cp.innerHTML=`<div class="cross-title">${nodeId.replace('\n',' ')}</div><div class="cross-sub">${co.sector} / ${co.code} / 株主${inv.length}社</div>${inv.map(l=>`<div class="cross-row"><span class="cross-name">${l[0].replace('\n',' ')}</span><span class="cross-val">${l[2]}%</span></div>`).join('')}`;
+    const ls=LR.filter(l=>l[1]===nid).sort((a,b)=>b[2]-a[2]);
+    cp.innerHTML=`<div class="ct">${nid.replace('\n',' ')}</div><div class="cs">${co.s} / ${co.code} / 株主${ls.length}社</div>${ls.map(l=>`<div class="cr"><span class="crn">${l[0].replace('\n',' ')}</span><span class="crv">${l[2]}%</span></div>`).join('')}`;
   }
 }
-const area=document.getElementById("graph-area");
+
+// ── D3 ──
+const area=document.getElementById("ga");
 const W=area.clientWidth,H=area.clientHeight;
 const svg=d3.select("#graph").attr("viewBox",[0,0,W,H]);
 const g=svg.append("g");
-const zoom=d3.zoom().scaleExtent([0.2,4]).on("zoom",e=>g.attr("transform",e.transform));
+const zoom=d3.zoom().scaleExtent([0.15,5]).on("zoom",e=>g.attr("transform",e.transform));
 svg.call(zoom);
+
+// Markers
 const defs=svg.append("defs");
-[["arr-hi","#3b82f6",26],["arr-lo","#2a3550",26],["arr-gov","#fb923c",28],["arr-grn","#34d399",26],["arr-ind","#f59e0b",26],["arr-roc","#6366f1",30]].forEach(([id,c,r])=>{
+[["ah","#3b82f6",24],["al","#1e2840",24],["ag","#fb923c",28],["agr","#34d399",24],["ai","#f59e0b",24],["ar","#6366f1",28],["agg","#f97316",26],["asb","#22c55e",30]].forEach(([id,c,r])=>{
   defs.append("marker").attr("id",id).attr("viewBox","0 -4 8 8").attr("refX",r).attr("refY",0).attr("markerWidth",5).attr("markerHeight",5).attr("orient","auto").append("path").attr("d","M0,-4L8,0L0,4").attr("fill",c);
 });
+
 const sim=d3.forceSimulation(nodes)
-  .force("link",d3.forceLink(links).id(d=>d.id).distance(d=>{if(d.value>=40)return 90;if(d.value>=15)return 140;if(d.value>=8)return 170;return 210;}).strength(d=>d.value>15?0.9:d.value>5?0.6:0.3))
-  .force("charge",d3.forceManyBody().strength(d=>d.isCompany?-600:-300))
+  .force("link",d3.forceLink(links).id(d=>d.id)
+    .distance(d=>{if(d.value>=40)return 80;if(d.value>=20)return 120;if(d.value>=10)return 155;if(d.value>=5)return 185;return 220;})
+    .strength(d=>d.value>20?0.95:d.value>10?0.7:d.value>5?0.45:0.2))
+  .force("charge",d3.forceManyBody().strength(d=>d.isC?-300:-180))
   .force("center",d3.forceCenter(W/2,H/2))
-  .force("collision",d3.forceCollide().radius(d=>(d.size||20)+18));
-const linkSel=g.append("g").selectAll("line").data(links).join("line").attr("class","link")
-  .attr("stroke",d=>{const sh=SHAREHOLDERS.find(s=>s.id===(d.source.id||d.source));if(!sh)return"#2a3550";if(sh.type==="gov")return"#fb923c";if(sh.type==="individual")return"#34d399";if(sh.id==="バークシャー・ハサウェイ")return"#f59e0b";if(sh.id==="ロシュ")return"#6366f1";return d.value>=15?"#3b82f6":d.value>=8?"#1e3060":"#111828";})
-  .attr("stroke-width",d=>Math.max(0.5,Math.sqrt(d.value)*0.8))
-  .attr("stroke-opacity",d=>d.value>=20?0.85:d.value>=10?0.65:0.35)
-  .attr("marker-end",d=>{const sh=SHAREHOLDERS.find(s=>s.id===(d.source.id||d.source));if(!sh)return"url(#arr-lo)";if(sh.type==="gov")return"url(#arr-gov)";if(sh.type==="individual")return"url(#arr-grn)";if(sh.id==="バークシャー・ハサウェイ")return"url(#arr-ind)";if(sh.id==="ロシュ")return"url(#arr-roc)";return d.value>=10?"url(#arr-hi)":"url(#arr-lo)";});
-const llblSel=g.append("g").selectAll("text").data(links.filter(l=>l.value>=10)).join("text")
-  .attr("text-anchor","middle").attr("font-size",7.5).attr("fill","#3a5070").text(d=>d.value+"%");
-const nodeSel=g.append("g").selectAll("g").data(nodes).join("g")
-  .attr("class",d=>"node"+(d.isCompany?" company":""))
-  .style("--glow",d=>d.isCompany?(SC[d.sector]||"#f87171"):(TC[d.type]||"#60a5fa"))
+  .force("collision",d3.forceCollide().radius(d=>(d.size||16)+14));
+
+function mrkr(l){
+  const sh=SH.find(s=>s.id===(l.source.id||l.source));
+  if(!sh)return"url(#al)";
+  if(sh.id==="ロシュ")return"url(#ar)";
+  if(sh.id==="原子力損害賠償・廃炉等支援機構")return"url(#agg)";
+  if(sh.type==="gov"||sh.type==="govorg")return"url(#ag)";
+  if(sh.type==="individual")return"url(#agr)";
+  if(sh.id==="バークシャー・ハサウェイ")return"url(#ai)";
+  if(sh.id==="ソフトバンクグループ（SB株主）")return"url(#asb)";
+  return l.value>=10?"url(#ah)":"url(#al)";
+}
+function lclr(l){
+  const sh=SH.find(s=>s.id===(l.source.id||l.source));
+  if(!sh)return"#1a2240";
+  if(sh.id==="ロシュ")return"#6366f1";
+  if(sh.id==="原子力損害賠償・廃炉等支援機構")return"#f97316";
+  if(sh.type==="gov")return"#fb923c";
+  if(sh.type==="individual")return"#34d399";
+  if(sh.id==="バークシャー・ハサウェイ")return"#f59e0b";
+  if(sh.id==="ソフトバンクグループ（SB株主）")return"#22c55e";
+  return l.value>=15?"#3b82f6":l.value>=8?"#1e3060":"#111828";
+}
+
+const lkSel=g.append("g").selectAll("line").data(links).join("line")
+  .attr("class","link")
+  .attr("stroke",lclr)
+  .attr("stroke-width",d=>Math.max(0.4,Math.sqrt(d.value)*0.75))
+  .attr("stroke-opacity",d=>d.value>=20?0.85:d.value>=10?0.65:d.value>=5?0.40:0.25)
+  .attr("marker-end",mrkr);
+
+const llSel=g.append("g").selectAll("text").data(links.filter(l=>l.value>=15)).join("text")
+  .attr("text-anchor","middle").attr("font-size",7).attr("fill","#3a5070").text(d=>d.value+"%");
+
+const ndSel=g.append("g").selectAll("g").data(nodes).join("g")
+  .attr("class",d=>"node"+(d.isC?" company":""))
+  .style("--glow",d=>d.isC?(SC[d.s]||"#f87171"):(TC[d.type]||"#60a5fa"))
   .call(d3.drag()
     .on("start",(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y})
     .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y})
     .on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
-nodeSel.append("circle")
+
+ndSel.append("circle")
   .attr("r",d=>d.size)
-  .attr("fill",d=>{const c=d.isCompany?(SC[d.sector]||"#f87171"):(TC[d.type]||"#888");return c+(d.isCompany?"18":"15");})
-  .attr("stroke",d=>d.isCompany?(SC[d.sector]||"#f87171"):(TC[d.type]||"#888"))
-  .attr("stroke-width",d=>d.isCompany?2:1.5);
-nodeSel.each(function(d){
-  const el=d3.select(this);const lines=d.id.split("\n");const lh=11,totalH=(lines.length-1)*lh;
-  lines.forEach((line,i)=>el.append("text").attr("y",-totalH/2+i*lh).text(line));
+  .attr("fill",d=>{const c=d.isC?(SC[d.s]||"#f87171"):(TC[d.type]||"#888");return c+(d.isC?"18":"14");})
+  .attr("stroke",d=>d.isC?(SC[d.s]||"#f87171"):(TC[d.type]||"#888"))
+  .attr("stroke-width",d=>d.isC?1.8:1.4);
+
+ndSel.each(function(d){
+  const el=d3.select(this),ls=d.id.split("\n"),lh=10,th=(ls.length-1)*lh;
+  ls.forEach((line,i)=>el.append("text").attr("y",-th/2+i*lh).text(line));
 });
-const tt=document.getElementById("tt");
-nodeSel
+
+// Tooltip
+const ttEl=document.getElementById("tt");
+ndSel
   .on("mouseover",(ev,d)=>{
-    const name=(d.id||"").replace(/\n/g," ");let html=`<div class="tt-title">${name}</div>`;
-    if(d.isCompany){
-      html+=`<div class="tt-type" style="color:${SC[d.sector]||'#888'}">${d.sector} / ${d.code}</div>`;
-      if(d.desc)html+=`<div style="color:#3a5070;font-size:9px;margin-bottom:6px">${d.desc}</div>`;
-      const inv=LINKS_RAW.filter(l=>l[1]===d.id).sort((a,b)=>b[2]-a[2]);
-      if(inv.length){html+=`<div class="tt-section">主要株主</div>`;inv.forEach(l=>{html+=`<div class="tt-row"><span class="tt-k">${l[0].replace('\n',' ')}</span><span class="tt-v">${l[2]}%</span></div>`;});}
+    const nm=(d.id||"").replace(/\n/g," ");let html=`<div class="tt1">${nm}</div>`;
+    if(d.isC){
+      html+=`<div class="tt2" style="color:${SC[d.s]||'#888'}">${d.s} / ${d.code}</div>`;
+      if(d.desc)html+=`<div style="color:#3a5070;font-size:8.5px;margin-bottom:5px">${d.desc}</div>`;
+      const inv=LR.filter(l=>l[1]===d.id).sort((a,b)=>b[2]-a[2]);
+      if(inv.length){html+=`<div class="tts">主要株主</div>`;inv.forEach(l=>{html+=`<div class="ttr"><span class="ttk">${l[0].replace('\n',' ')}</span><span class="ttv">${l[2]}%</span></div>`;});}
     }else{
-      const typeLbl={trust:"信託・機関投資家",gov:"政府系株主",corporate:"事業会社株主",individual:"個人（創業家）",foreign:"外国機関投資家",institution:"保険会社・機関"}[d.type]||"";
-      html+=`<div class="tt-type" style="color:${TC[d.type]}">${typeLbl}</div>`;
-      if(d.desc)html+=`<div style="color:#3a5070;font-size:9px;margin-bottom:6px">${d.desc}</div>`;
-      const hlds=LINKS_RAW.filter(l=>l[0]===d.id).sort((a,b)=>b[2]-a[2]);
-      if(hlds.length){html+=`<div class="tt-section">保有銘柄</div>`;hlds.forEach(l=>{html+=`<div class="tt-row"><span class="tt-k">${l[1].replace('\n',' ')}</span><span class="tt-v">${l[2]}%</span></div>`;});}
+      const tl={trust:"信託・機関投資家",gov:"政府系株主",govorg:"政府系機関",corporate:"事業会社株主",individual:"個人（創業家）",foreign:"外国機関投資家",institution:"保険会社"}[d.type]||"";
+      html+=`<div class="tt2" style="color:${TC[d.type]}">${tl}</div>`;
+      if(d.desc)html+=`<div style="color:#3a5070;font-size:8.5px;margin-bottom:5px">${d.desc}</div>`;
+      const ls=LR.filter(l=>l[0]===d.id).sort((a,b)=>b[2]-a[2]);
+      if(ls.length){html+=`<div class="tts">保有銘柄</div>`;ls.forEach(l=>{html+=`<div class="ttr"><span class="ttk">${l[1].replace('\n',' ')}</span><span class="ttv">${l[2]}%</span></div>`;});}
     }
-    tt.innerHTML=html;tt.style.display="block";
+    ttEl.innerHTML=html;ttEl.style.display="block";
   })
-  .on("mousemove",ev=>{tt.style.left=Math.min(ev.clientX+14,window.innerWidth-230)+"px";tt.style.top=Math.max(ev.clientY-10,10)+"px";})
-  .on("mouseout",()=>tt.style.display="none")
-  .on("click",(ev,d)=>{ev.stopPropagation();highlightNode(d.id);showCross(d.id);});
-svg.on("click",resetHighlight);
-function highlightNode(id,cardEl){
-  const connected=new Set([id]);
-  links.forEach(l=>{const s=l.source.id||l.source,t=l.target.id||l.target;if(s===id)connected.add(t);if(t===id)connected.add(s);});
-  nodeSel.classed("highlighted",d=>connected.has(d.id)).classed("faded",d=>!connected.has(d.id));
-  linkSel.classed("faded",l=>!connected.has(l.source.id||l.source)||!connected.has(l.target.id||l.target));
-  document.querySelectorAll(".sh-card").forEach(c=>c.classList.remove("sel"));
-  if(cardEl)cardEl.classList.add("sel");
-  else document.querySelectorAll(".sh-card").forEach(c=>{if(c.dataset.id===id)c.classList.add("sel");});
+  .on("mousemove",ev=>{ttEl.style.left=Math.min(ev.clientX+12,window.innerWidth-220)+"px";ttEl.style.top=Math.max(ev.clientY-8,8)+"px";})
+  .on("mouseout",()=>ttEl.style.display="none")
+  .on("click",(ev,d)=>{ev.stopPropagation();hlNode(d.id);showCross(d.id);});
+
+svg.on("click",reset);
+
+function hlNode(id,card){
+  const conn=new Set([id]);
+  links.forEach(l=>{const s=l.source.id||l.source,t=l.target.id||l.target;if(s===id)conn.add(t);if(t===id)conn.add(s);});
+  ndSel.classed("hl",d=>conn.has(d.id)).classed("faded",d=>!conn.has(d.id));
+  lkSel.classed("faded",l=>!conn.has(l.source.id||l.source)||!conn.has(l.target.id||l.target));
+  document.querySelectorAll(".shc").forEach(c=>c.classList.remove("sel"));
+  if(card)card.classList.add("sel");
+  else document.querySelectorAll(".shc").forEach(c=>{if(c.dataset.id===id)c.classList.add("sel");});
 }
-function resetHighlight(){
-  nodeSel.classed("highlighted faded",false);linkSel.classed("faded",false);
-  document.querySelectorAll(".sh-card").forEach(c=>c.classList.remove("sel"));
-}
+function reset(){ndSel.classed("hl faded",false);lkSel.classed("faded",false);document.querySelectorAll(".shc").forEach(c=>c.classList.remove("sel"));}
+
 sim.on("tick",()=>{
-  linkSel.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
-  llblSel.attr("x",d=>(d.source.x+d.target.x)/2).attr("y",d=>(d.source.y+d.target.y)/2-3);
-  nodeSel.attr("transform",d=>`translate(${d.x},${d.y})`);
+  lkSel.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  llSel.attr("x",d=>(d.source.x+d.target.x)/2).attr("y",d=>(d.source.y+d.target.y)/2-3);
+  ndSel.attr("transform",d=>`translate(${d.x},${d.y})`);
 });
-function applyFilters(){
-  const q=searchQ.toLowerCase();
-  nodeSel.style("display",d=>{
+
+// ── Filters ──
+function applyF(){
+  const q=SQ.toLowerCase();
+  ndSel.style("display",d=>{
     if(q&&!d.id.toLowerCase().replace(/\n/g,"").includes(q))return"none";
-    if(!d.isCompany)return null;
-    if(activeSector!=="all"&&!matchSector(d.sector))return"none";
+    if(!d.isC)return null;
+    if(AS!=="all"&&!ms(d.s))return"none";
     return null;
   });
-  linkSel.style("display",l=>{
+  lkSel.style("display",l=>{
     const s=l.source.id||l.source,t=l.target.id||l.target;
-    if(l.value<minPct)return"none";
-    const co=COMPANIES.find(c=>c.id===t);
-    if(activeSector!=="all"&&co&&!matchSector(co.sector))return"none";
+    if(l.value<MP)return"none";
+    const co=CO.find(c=>c.id===t);
+    if(AS!=="all"&&co&&!ms(co.s))return"none";
     if(q&&!s.toLowerCase().replace(/\n/g,"").includes(q)&&!t.toLowerCase().replace(/\n/g,"").includes(q))return"none";
     return null;
   });
-  llblSel.style("display",l=>{
-    if(l.value<minPct)return"none";
-    const co=COMPANIES.find(c=>c.id===(l.target.id||l.target));
-    if(activeSector!=="all"&&co&&!matchSector(co.sector))return"none";
+  llSel.style("display",l=>{
+    if(l.value<MP||l.value<15)return"none";
+    const co=CO.find(c=>c.id===(l.target.id||l.target));
+    if(AS!=="all"&&co&&!ms(co.s))return"none";
     return null;
   });
-  buildRanking();
+  buildR();
 }
-document.querySelectorAll(".btn[data-sector]").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".btn[data-sector]").forEach(x=>x.classList.remove("active","active-green"));
-  b.classList.add(b.dataset.sector==="all"?"active-green":"active");
-  activeSector=b.dataset.sector;resetHighlight();applyFilters();
+
+document.querySelectorAll(".btn[data-s]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".btn[data-s]").forEach(x=>x.classList.remove("a","ag"));
+  b.classList.add(b.dataset.s==="all"?"ag":"a");
+  AS=b.dataset.s;reset();applyF();
 }));
-document.querySelectorAll(".btn[data-min]").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".btn[data-min]").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");minPct=+b.dataset.min;resetHighlight();applyFilters();
+document.querySelectorAll(".btn[data-m]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".btn[data-m]").forEach(x=>x.classList.remove("a"));
+  b.classList.add("a");MP=+b.dataset.m;reset();applyF();
 }));
-document.getElementById("search").addEventListener("input",e=>{searchQ=e.target.value;resetHighlight();applyFilters();});
-document.querySelectorAll(".side-tab").forEach(t=>t.addEventListener("click",()=>{
-  document.querySelectorAll(".side-tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");
-  activeTab=t.dataset.tab;
-  document.getElementById("ranking-panel").style.display=activeTab==="ranking"?"block":"none";
-  document.getElementById("cross-panel").style.display=activeTab==="cross"?"block":"none";
+document.getElementById("srch").addEventListener("input",e=>{SQ=e.target.value;reset();applyF();});
+
+document.querySelectorAll(".st").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".st").forEach(x=>x.classList.remove("a"));t.classList.add("a");
+  AT=t.dataset.t;
+  document.getElementById("rp").style.display=AT==="r"?"block":"none";
+  document.getElementById("cp").style.display=AT==="c"?"block":"none";
 }));
-document.querySelectorAll(".insight[data-highlight]").forEach(chip=>chip.addEventListener("click",()=>{
-  const id=chip.dataset.highlight;highlightNode(id);showCross(id);
+
+document.querySelectorAll(".ic[data-h]").forEach(ch=>ch.addEventListener("click",()=>{
+  const id=ch.dataset.h;hlNode(id);showCross(id);
 }));
-buildRanking();
+
+buildR();
 </script>
 </body>
 </html>
