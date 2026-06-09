@@ -15,3 +15,13 @@
   from = "/shareholders"
   to   = "/shareholders/index.html"
   status = 200
+
+[[redirects]]
+  from = "/speed"
+  to   = "/speed/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ir-salary"
+  to   = "/ir-salary/index.html"
+  status = 200

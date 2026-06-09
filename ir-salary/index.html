@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大手企業 社員・社長 給与比較 | 日本情報マップ</title>
+  <meta name="description" content="日本の大手上場企業25社の平均給与・社長報酬・平均年齢を有価証券報告書データから比較。社員と社長の給与格差を可視化。">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --card: #111827;
+      --border: #1e2a3a;
+      --accent: #3b82f6;
+      --accent2: #60a5fa;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --red: #ef4444;
+      --tag-bg: #1e3a5f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #0a0e1a 0%, #0f1e35 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .back-btn {
+      color: var(--accent2); text-decoration: none;
+      font-size: 13px; display: flex; align-items: center; gap: 6px;
+      opacity: .7; transition: opacity .2s;
+    }
+    .back-btn:hover { opacity: 1; }
+    header h1 { font-size: 1.3rem; font-weight: 700; }
+    header span { font-size: .75rem; color: var(--muted); margin-left: 12px; }
+
+    /* ── HERO STATS ── */
+    .hero {
+      padding: 32px 24px 0;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .hero-desc {
+      color: var(--muted); font-size: .88rem; line-height: 1.7;
+      margin-bottom: 24px; max-width: 700px;
+    }
+    .stat-row {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      flex: 1; min-width: 160px;
+    }
+    .stat-box .val { font-size: 1.5rem; font-weight: 700; color: var(--accent2); }
+    .stat-box .lbl { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── FILTERS ── */
+    .filters {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px 16px;
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .filters label { font-size: .8rem; color: var(--muted); margin-right: 4px; }
+    select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px; border-radius: 6px;
+      font-size: .82rem; cursor: pointer;
+    }
+    select:focus { outline: none; border-color: var(--accent); }
+    .sort-hint { font-size: .75rem; color: var(--muted); margin-left: auto; }
+
+    /* ── TABLE WRAPPER ── */
+    .table-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px 12px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .82rem;
+    }
+    thead th {
+      background: #0d1828;
+      border-bottom: 2px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      position: sticky; top: 0; z-index: 1;
+    }
+    thead th:hover { color: var(--accent2); }
+    thead th.sorted { color: var(--accent2); }
+    thead th .sort-icon { margin-left: 4px; font-size: .7rem; }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: #151e30; }
+    tbody td { padding: 11px 12px; vertical-align: middle; }
+
+    .rank-num {
+      color: var(--muted); font-size: .75rem;
+      min-width: 24px; text-align: right;
+    }
+    .company-name { font-weight: 600; font-size: .88rem; }
+    .company-name a {
+      color: var(--text); text-decoration: none;
+    }
+    .company-name a:hover { color: var(--accent2); }
+    .sector-tag {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--accent2);
+      font-size: .68rem;
+      padding: 2px 7px; border-radius: 4px;
+      margin-top: 3px;
+    }
+    .salary-bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+    .salary-bar-bg {
+      flex: 1; height: 6px; border-radius: 3px;
+      background: #1e2a3a; overflow: hidden;
+    }
+    .salary-bar { height: 100%; border-radius: 3px; background: var(--accent); }
+    .salary-val { font-weight: 700; white-space: nowrap; }
+    .age-val { color: var(--text); }
+    .ceo-name { font-size: .8rem; color: var(--text); }
+    .ceo-age { font-size: .75rem; color: var(--muted); }
+    .ceo-pay { font-weight: 600; }
+    .ceo-pay.undisclosed { color: var(--muted); font-size: .78rem; }
+    .ratio-badge {
+      display: inline-block;
+      padding: 3px 9px; border-radius: 12px;
+      font-weight: 700; font-size: .8rem; white-space: nowrap;
+    }
+    .ratio-low    { background: #052e16; color: #34d399; }
+    .ratio-mid    { background: #1c1202; color: #f59e0b; }
+    .ratio-high   { background: #2d1105; color: #f97316; }
+    .ratio-extreme{ background: #2d0707; color: #ef4444; }
+    .ratio-none   { background: #111; color: #475569; }
+    .source-note { font-size: .68rem; color: #334155; }
+
+    /* ── CHART ── */
+    .chart-section {
+      max-width: 1200px; margin: 0 auto;
+      padding: 28px 24px 8px;
+    }
+    .section-title {
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 16px; color: var(--accent2);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::before {
+      content: ''; display: inline-block;
+      width: 4px; height: 16px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .chart-row {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .chart-item {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .chart-label {
+      width: 160px; font-size: .78rem;
+      text-align: right; flex-shrink: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chart-bar-wrap {
+      flex: 1; height: 20px; background: #1e2a3a;
+      border-radius: 3px; overflow: hidden; position: relative;
+    }
+    .chart-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      transition: width .4s;
+    }
+    .chart-val {
+      width: 80px; font-size: .75rem; font-weight: 600;
+      color: var(--accent2); flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 1200px; margin: 0 auto;
+      padding: 24px 24px 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+    .notes {
+      font-size: .75rem; color: var(--muted); line-height: 1.9;
+    }
+    .notes li { margin-left: 16px; }
+
+    @media (max-width: 768px) {
+      .chart-label { width: 100px; }
+      .stat-box .val { font-size: 1.2rem; }
+      table { font-size: .75rem; }
+      thead th, tbody td { padding: 8px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-btn">← ホームへ</a>
+  <div>
+    <h1>💼 大手企業 社員・社長 給与比較</h1>
+    <span>有価証券報告書・公開IR情報より / 2023〜2024年度</span>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <p class="hero-desc">
+      日本の大手上場企業25社の平均給与・社長報酬・平均年齢を有価証券報告書（有報）および公開IR情報をもとに比較。
+      社員と社長の給与格差（倍率）を一覧できます。社長報酬は役員報酬総額の個人開示分（1億円以上）を参照。
+      非開示欄は個人開示が義務対象外（1億円未満等）の場合です。
+    </p>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+
+  <div class="filters">
+    <label>業種:</label>
+    <select id="sectorFilter" onchange="applyFilter()">
+      <option value="">すべての業種</option>
+    </select>
+    <span class="sort-hint">▲▼ 列ヘッダークリックで並び替え</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th data-col="rank">#</th>
+          <th data-col="name">企業名</th>
+          <th data-col="sector">業種</th>
+          <th data-col="avgSalary">平均給与 <span class="sort-icon">↓</span></th>
+          <th data-col="avgAge">平均年齢</th>
+          <th data-col="ceo">社長</th>
+          <th data-col="ceoAge">社長年齢</th>
+          <th data-col="ceoPay">社長報酬</th>
+          <th data-col="ratio">倍率<br><span style="font-size:.65rem;font-weight:400">社長÷社員</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="chart-section">
+    <div class="section-title">平均給与ランキング（上位25社）</div>
+    <div class="chart-row" id="salaryChart"></div>
+  </div>
+
+  <div class="chart-section">
+    <div class="section-title">社員給与格差倍率ランキング（開示済み企業）</div>
+    <div class="chart-row" id="ratioChart"></div>
+  </div>
+</main>
+
+<footer>
+  <ul class="notes">
+    <li>データ出典：各社有価証券報告書（2023〜2024年度）・IR情報・役員報酬個人開示（1億円以上）</li>
+    <li>平均給与・平均年齢は有報記載の「従業員の状況」より。単体・グループ会社で記載範囲が異なる場合があります。</li>
+    <li>社長報酬は役員報酬の個人開示分（上限1億円以上で義務）。非開示は1億円未満または個別開示なしの場合。ストックオプション・株式報酬は含む場合・含まない場合があります。</li>
+    <li>ファーストリテイリング（柳井正氏）・ソフトバンクG（孫正義氏）の配当収入は役員報酬に含まれていません。</li>
+    <li>倍率＝社長報酬（億円）÷ 平均給与（億円）。社長報酬が非開示の場合は「-」。</li>
+    <li>※本ページは公開情報の整理を目的としており、投資判断の根拠となるものではありません。</li>
+  </ul>
+</footer>
+
+<script>
+const DATA = [
+  { name:"三菱商事",      sector:"総合商社",    avgSalary:2091, avgAge:42.7, ceo:"中西勝也",          ceoAge:61, ceoPay:7.2,  ir:"https://www.mitsubishicorp.com/jp/ja/ir/" },
+  { name:"キーエンス",    sector:"FA・精密機器", avgSalary:2067, avgAge:35.4, ceo:"辻哲郎",            ceoAge:55, ceoPay:null, ir:"https://www.keyence.co.jp/company/investor/" },
+  { name:"伊藤忠商事",    sector:"総合商社",    avgSalary:1836, avgAge:42.4, ceo:"石井敬太",          ceoAge:60, ceoPay:4.8,  ir:"https://www.itochu.co.jp/ja/ir/" },
+  { name:"住友商事",      sector:"総合商社",    avgSalary:1710, avgAge:42.8, ceo:"兵頭誠之",          ceoAge:60, ceoPay:3.5,  ir:"https://www.sumitomocorp.com/ja/jp/ir" },
+  { name:"ファーストリテイリング", sector:"小売・アパレル", avgSalary:1256, avgAge:38.5, ceo:"柳井正", ceoAge:75, ceoPay:4.0, ir:"https://www.fastretailing.com/jp/ir/" },
+  { name:"東京エレクトロン",sector:"半導体製造装置",avgSalary:1272, avgAge:43.7, ceo:"河合利樹",     ceoAge:59, ceoPay:8.1,  ir:"https://www.tel.com/jp/ir/" },
+  { name:"ファナック",    sector:"ロボット・FA", avgSalary:1238, avgAge:40.0, ceo:"山口賢治",         ceoAge:57, ceoPay:null, ir:"https://www.fanuc.co.jp/ja/ir/" },
+  { name:"リクルートHD",  sector:"HR・IT",       avgSalary:1145, avgAge:36.1, ceo:"出木場久征",       ceoAge:52, ceoPay:5.9,  ir:"https://recruit-holdings.com/ja/ir/" },
+  { name:"ソニーグループ",sector:"電機・エンタメ",avgSalary:1118, avgAge:42.5, ceo:"吉田憲一郎",      ceoAge:65, ceoPay:23.4, ir:"https://www.sony.com/ja/SonyInfo/IR/" },
+  { name:"武田薬品工業",  sector:"製薬",         avgSalary:1104, avgAge:43.3, ceo:"クリストフ・ウェバー",ceoAge:56,ceoPay:16.5,ir:"https://www.takeda.com/jp/investors/" },
+  { name:"任天堂",        sector:"ゲーム",        avgSalary:1073, avgAge:37.9, ceo:"古川俊太郎",       ceoAge:55, ceoPay:2.6,  ir:"https://www.nintendo.co.jp/ir/" },
+  { name:"三菱UFJ FG",   sector:"銀行・金融",   avgSalary:1029, avgAge:42.1, ceo:"亀沢宏規",         ceoAge:62, ceoPay:2.5,  ir:"https://www.mufg.jp/ir/" },
+  { name:"JT（日本たばこ）",sector:"食品・たばこ",avgSalary:1013, avgAge:43.6, ceo:"岩井睦雄",        ceoAge:63, ceoPay:2.1,  ir:"https://www.jti.co.jp/investors/" },
+  { name:"KDDI",          sector:"通信",          avgSalary:997,  avgAge:41.0, ceo:"高橋誠",           ceoAge:62, ceoPay:2.3,  ir:"https://www.kddi.com/ir/" },
+  { name:"トヨタ自動車",  sector:"自動車",        avgSalary:983,  avgAge:40.7, ceo:"佐藤恒治",         ceoAge:59, ceoPay:6.2,  ir:"https://global.toyota/jp/ir/" },
+  { name:"日立製作所",    sector:"電機・インフラ",avgSalary:961,  avgAge:42.6, ceo:"小島啓二",         ceoAge:62, ceoPay:4.1,  ir:"https://www.hitachi.co.jp/IR/" },
+  { name:"NTTデータ",     sector:"IT・情報通信",  avgSalary:906,  avgAge:39.9, ceo:"佐々木裕",         ceoAge:56, ceoPay:1.8,  ir:"https://www.nttdata.com/jp/ja/ir/" },
+  { name:"NTT",           sector:"通信",          avgSalary:880,  avgAge:44.5, ceo:"島田明",           ceoAge:60, ceoPay:1.8,  ir:"https://group.ntt/jp/ir/" },
+  { name:"信越化学工業",  sector:"化学",          avgSalary:887,  avgAge:41.9, ceo:"中西壽治",         ceoAge:68, ceoPay:null, ir:"https://www.shinetsu.co.jp/jp/ir/" },
+  { name:"花王",          sector:"消費財",        avgSalary:889,  avgAge:42.8, ceo:"長谷部佳宏",       ceoAge:61, ceoPay:1.5,  ir:"https://www.kao.com/jp/corporate/investor-relations/" },
+  { name:"三菱UFJ銀行",   sector:"銀行",          avgSalary:856,  avgAge:39.0, ceo:"半沢淳一",         ceoAge:58, ceoPay:2.8,  ir:"https://www.bk.mufg.jp/ir/" },
+  { name:"日産自動車",    sector:"自動車",        avgSalary:853,  avgAge:41.8, ceo:"内田誠",           ceoAge:60, ceoPay:2.8,  ir:"https://www.nissan-global.com/JP/IR/" },
+  { name:"セブン&アイHD", sector:"小売",          avgSalary:798,  avgAge:41.7, ceo:"井阪隆一",         ceoAge:67, ceoPay:3.2,  ir:"https://www.7andi.com/ir/" },
+  { name:"村田製作所",    sector:"電子部品",      avgSalary:803,  avgAge:40.1, ceo:"中島規巨",         ceoAge:58, ceoPay:null, ir:"https://www.murata.com/ja-jp/investor/" },
+  { name:"イオン",        sector:"小売",          avgSalary:553,  avgAge:42.5, ceo:"吉田昭夫",         ceoAge:64, ceoPay:1.8,  ir:"https://www.aeon.info/ir/" },
+];
+
+const MAX_SALARY = Math.max(...DATA.map(d => d.avgSalary));
+
+let sortCol = "avgSalary";
+let sortAsc  = false;
+let filterSector = "";
+
+// Build sector options
+const sectors = [...new Set(DATA.map(d => d.sector))].sort();
+const sel = document.getElementById("sectorFilter");
+sectors.forEach(s => {
+  const o = document.createElement("option");
+  o.value = s; o.textContent = s;
+  sel.appendChild(o);
+});
+
+function ratioBadge(ratio) {
+  if (ratio === null) return `<span class="ratio-badge ratio-none">非開示</span>`;
+  const cls = ratio < 30 ? "ratio-low" : ratio < 60 ? "ratio-mid" : ratio < 100 ? "ratio-high" : "ratio-extreme";
+  return `<span class="ratio-badge ${cls}">${ratio}倍</span>`;
+}
+
+function ceoPay(val) {
+  if (val === null) return `<span class="ceo-pay undisclosed">非開示 / 1億円未満</span>`;
+  return `<span class="ceo-pay">${val.toFixed(1)}億円</span>`;
+}
+
+function render() {
+  let rows = DATA.filter(d => !filterSector || d.sector === filterSector);
+  rows.sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (sortCol === "ratio") {
+      av = a.ceoPay !== null ? (a.ceoPay * 10000 / a.avgSalary) : -1;
+      bv = b.ceoPay !== null ? (b.ceoPay * 10000 / b.avgSalary) : -1;
+    }
+    if (typeof av === "string") av = av.toLowerCase(), bv = bv.toLowerCase();
+    if (av === null) av = sortAsc ? Infinity : -Infinity;
+    if (bv === null) bv = sortAsc ? Infinity : -Infinity;
+    return sortAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+  });
+
+  // Stats
+  const avgAll = Math.round(rows.reduce((s, d) => s + d.avgSalary, 0) / rows.length);
+  const maxRatio = rows.filter(d => d.ceoPay).reduce((mx, d) => {
+    const r = Math.round(d.ceoPay * 10000 / d.avgSalary);
+    return r > mx.r ? { name: d.name, r } : mx;
+  }, { name: "", r: 0 });
+  const maxSalary = rows.reduce((mx, d) => d.avgSalary > mx.val ? { name: d.name, val: d.avgSalary } : mx, { name:"", val:0 });
+  document.getElementById("statRow").innerHTML = `
+    <div class="stat-box"><div class="val">25社</div><div class="lbl">対象企業数</div></div>
+    <div class="stat-box"><div class="val">${avgAll.toLocaleString()}万円</div><div class="lbl">平均給与 (平均)</div></div>
+    <div class="stat-box"><div class="val">${maxSalary.name}</div><div class="lbl">最高平均給与 (${maxSalary.val.toLocaleString()}万)</div></div>
+    <div class="stat-box"><div class="val">${maxRatio.r}倍</div><div class="lbl">最大格差 (${maxRatio.name})</div></div>
+  `;
+
+  // Table
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = rows.map((d, i) => {
+    const ratio = d.ceoPay !== null ? Math.round(d.ceoPay * 10000 / d.avgSalary) : null;
+    const pct = Math.round(d.avgSalary / MAX_SALARY * 100);
+    return `
+    <tr>
+      <td class="rank-num">${i + 1}</td>
+      <td><div class="company-name"><a href="${d.ir}" target="_blank" rel="noopener">${d.name} ↗</a></div>
+          <div><span class="sector-tag">${d.sector}</span></div></td>
+      <td style="display:none">${d.sector}</td>
+      <td>
+        <div class="salary-bar-wrap">
+          <div class="salary-bar-bg"><div class="salary-bar" style="width:${pct}%"></div></div>
+          <span class="salary-val">${d.avgSalary.toLocaleString()}万</span>
+        </div>
+      </td>
+      <td class="age-val">${d.avgAge}歳</td>
+      <td><div class="ceo-name">${d.ceo}</div></td>
+      <td class="age-val">${d.ceoAge}歳</td>
+      <td>${ceoPay(d.ceoPay)}</td>
+      <td>${ratioBadge(ratio)}</td>
+    </tr>`;
+  }).join("");
+
+  // Sort header icons
+  document.querySelectorAll("thead th").forEach(th => {
+    const col = th.dataset.col;
+    const icon = th.querySelector(".sort-icon");
+    if (!icon) return;
+    if (col === sortCol) { icon.textContent = sortAsc ? "↑" : "↓"; th.classList.add("sorted"); }
+    else { icon.textContent = "↕"; th.classList.remove("sorted"); }
+  });
+
+  renderCharts(rows);
+}
+
+function renderCharts(rows) {
+  const sorted = [...rows].sort((a, b) => b.avgSalary - a.avgSalary);
+  const maxS = sorted[0].avgSalary;
+  document.getElementById("salaryChart").innerHTML = sorted.map(d => `
+    <div class="chart-item">
+      <div class="chart-label">${d.name}</div>
+      <div class="chart-bar-wrap">
+        <div class="chart-bar-fill" style="width:${Math.round(d.avgSalary/maxS*100)}%"></div>
+      </div>
+      <div class="chart-val">${d.avgSalary.toLocaleString()}万</div>
+    </div>`).join("");
+
+  const ratioRows = [...rows].filter(d => d.ceoPay !== null)
+    .map(d => ({ ...d, ratio: Math.round(d.ceoPay * 10000 / d.avgSalary) }))
+    .sort((a, b) => b.ratio - a.ratio);
+  const maxR = ratioRows[0]?.ratio || 1;
+  const colorFn = r => r < 30 ? "#10b981" : r < 60 ? "#f59e0b" : r < 100 ? "#f97316" : "#ef4444";
+  document.getElementById("ratioChart").innerHTML = ratioRows.map(d => `
+    <div class="chart-item">
+      <div class="chart-label">${d.name}</div>
+      <div class="chart-bar-wrap">
+        <div class="chart-bar-fill" style="width:${Math.round(d.ratio/maxR*100)}%;background:${colorFn(d.ratio)}"></div>
+      </div>
+      <div class="chart-val" style="color:${colorFn(d.ratio)}">${d.ratio}倍</div>
+    </div>`).join("");
+}
+
+function applyFilter() {
+  filterSector = document.getElementById("sectorFilter").value;
+  render();
+}
+
+// Header sort
+document.querySelectorAll("thead th[data-col]").forEach(th => {
+  th.addEventListener("click", () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = col === "name" || col === "sector"; }
+    // Add sort icon span if not present
+    if (!th.querySelector(".sort-icon")) {
+      const sp = document.createElement("span"); sp.className = "sort-icon";
+      th.appendChild(sp);
+    }
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
