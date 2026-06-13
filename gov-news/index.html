@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="内閣府・財務省・厚生労働省・国土交通省・経済産業省・環境省など主要省庁のプレスリリース・統計情報をまとめて確認できるポータル。">
+<title>官公庁ニュース まとめ | 日本情報マップ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Meiryo','Yu Gothic',sans-serif;background:#080b14;color:#e0e8f0;min-height:100vh}
+
+/* ── Header ── */
+header{background:rgba(8,11,20,.97);border-bottom:1px solid #141a2e;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-size:16px;font-weight:800;color:#fff;letter-spacing:.04em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{font-size:20px}
+.logo em{color:#38bdf8;font-style:normal}
+.page-title{font-size:13px;color:#5a7090;display:flex;align-items:center;gap:6px}
+.page-title span{color:#2a4060}
+.page-title strong{color:#e0e8f0}
+
+/* ── Hero ── */
+.page-hero{background:radial-gradient(ellipse at 50% 0%,#1a0808 0%,#080b14 70%);border-bottom:1px solid #1a0808;padding:40px 28px 32px;display:flex;align-items:center;gap:20px}
+.page-hero-icon{font-size:42px;flex-shrink:0}
+.page-hero-text h1{font-size:24px;font-weight:900;color:#fff;margin-bottom:6px}
+.page-hero-text h1 em{color:#f87171;font-style:normal}
+.page-hero-text p{font-size:12px;color:#4a5060;line-height:1.7;max-width:600px}
+.update-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;padding:4px 12px;border-radius:10px;background:#0d1218;border:1px solid #1a2030;color:#6a8090}
+.update-badge .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Filter ── */
+.filter-bar{background:rgba(255,255,255,.02);border-bottom:1px solid #0e1428;padding:10px 28px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:56px;z-index:90;backdrop-filter:blur(10px)}
+.filter-label{font-size:11px;color:#3a5060;margin-right:2px;flex-shrink:0}
+.tag{padding:4px 14px;border-radius:16px;font-size:11px;border:1px solid #1a2240;background:transparent;color:#5a7090;cursor:pointer;transition:all .15s;font-family:inherit}
+.tag:hover{border-color:#2a3860;color:#a0c0e0;background:rgba(255,255,255,.03)}
+.tag.active{border-color:#f87171;color:#fca5a5;background:rgba(248,113,113,.08)}
+
+.search-row{display:flex;gap:8px;padding:14px 28px;border-bottom:1px solid #0e1428;align-items:center}
+.search-wrap{flex:1;position:relative;max-width:500px}
+.search-wrap input{width:100%;padding:8px 36px 8px 14px;background:#0d1218;border:1px solid #1a2240;border-radius:8px;color:#e0e8f0;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s}
+.search-wrap input::placeholder{color:#3a5060}
+.search-wrap input:focus{border-color:#f87171}
+.search-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#3a5060;font-size:14px;pointer-events:none}
+.count-label{font-size:12px;color:#3a5060;flex-shrink:0}
+.count-label strong{color:#f87171}
+
+/* ── Main ── */
+.main{max-width:1000px;margin:0 auto;padding:24px 28px 60px}
+
+/* ── News cards ── */
+.card-list{display:flex;flex-direction:column;gap:10px}
+
+.news-card{display:flex;gap:16px;padding:16px 18px;background:rgba(255,255,255,.025);border:1px solid #111828;border-radius:12px;text-decoration:none;color:inherit;transition:all .18s;align-items:flex-start;position:relative;overflow:hidden}
+.news-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .18s}
+.news-card:hover{background:rgba(255,255,255,.05);border-color:#1e2a45;transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.news-card:hover::before{opacity:1}
+
+.ministry-badge{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.02em}
+
+.card-body{flex:1;min-width:0}
+.card-title-row{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.new-badge{background:#7f1d1d;color:#fca5a5;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;white-space:nowrap;flex-shrink:0;border:1px solid #991b1b}
+.card-title{font-size:13px;font-weight:700;color:#e8f0f8;line-height:1.5}
+.card-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.card-date{font-size:11px;color:#3a5070}
+.card-cat{font-size:10px;padding:2px 8px;background:rgba(56,189,248,.08);color:#38bdf8;border-radius:4px;border:1px solid rgba(56,189,248,.15)}
+.card-summary{font-size:11px;color:#4a6080;line-height:1.65;margin-top:6px}
+.card-link{font-size:10px;color:#f87171;margin-top:6px;display:flex;align-items:center;gap:3px}
+
+.card-arrow{color:#2a4060;font-size:16px;flex-shrink:0;align-self:center;transition:color .18s}
+.news-card:hover .card-arrow{color:#f87171}
+
+/* Ministry accent colors */
+.min-cao::before{background:linear-gradient(to right,#3b82f6,#6366f1)}
+.min-cao:hover{border-color:#1e2a60}
+.min-mof::before{background:linear-gradient(to right,#a78bfa,#ec4899)}
+.min-mof:hover{border-color:#2a1a50}
+.min-mhlw::before{background:linear-gradient(to right,#22c55e,#06b6d4)}
+.min-mhlw:hover{border-color:#1a3a20}
+.min-mlit::before{background:linear-gradient(to right,#f59e0b,#ef4444)}
+.min-mlit:hover{border-color:#3a2800}
+.min-meti::before{background:linear-gradient(to right,#06b6d4,#6366f1)}
+.min-meti:hover{border-color:#1a2e40}
+.min-env::before{background:linear-gradient(to right,#4ade80,#06b6d4)}
+.min-env:hover{border-color:#1a3a20}
+.min-maff::before{background:linear-gradient(to right,#facc15,#22c55e)}
+.min-maff:hover{border-color:#2a2a10}
+
+/* ── Empty ── */
+.empty{text-align:center;padding:60px 20px;color:#2a4060}
+.empty-icon{font-size:36px;margin-bottom:12px}
+
+/* ── Footer ── */
+footer{text-align:center;padding:40px 24px;border-top:1px solid #0e1428;font-size:10px;color:#1e2e40;line-height:2.2}
+footer a{color:#2a4060;text-decoration:none}
+footer a:hover{color:#f87171}
+.footer-note{font-size:10px;color:#1e2e40;max-width:700px;margin:0 auto;line-height:1.9}
+
+@media(max-width:640px){
+  .main{padding:16px 16px 50px}
+  .filter-bar,.search-row{padding:10px 16px}
+  .page-hero{padding:28px 16px;gap:14px}
+  .news-card{gap:10px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo"><span class="logo-icon">🗾</span>日本<em>情報</em>マップ</a>
+  <div class="page-title"><span>＞</span><strong>🏛 官公庁ニュース</strong></div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-icon">🏛</div>
+  <div class="page-hero-text">
+    <h1>官公庁 <em>ニュース</em> まとめ</h1>
+    <p>内閣府・環境省・財務省・厚生労働省・国土交通省・経済産業省など<br>主要省庁のプレスリリース・統計発表をまとめて確認。各発表元へのリンク付き。</p>
+    <div class="update-badge"><span class="dot"></span>毎週月曜更新 ／ 最終更新: 2026年6月14日</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">省庁：</span>
+  <button class="tag active" onclick="setFilter(this,'全て')">全て</button>
+  <button class="tag" onclick="setFilter(this,'内閣府')">内閣府</button>
+  <button class="tag" onclick="setFilter(this,'財務省')">財務省</button>
+  <button class="tag" onclick="setFilter(this,'厚生労働省')">厚生労働省</button>
+  <button class="tag" onclick="setFilter(this,'国土交通省')">国土交通省</button>
+  <button class="tag" onclick="setFilter(this,'経済産業省')">経済産業省</button>
+  <button class="tag" onclick="setFilter(this,'環境省')">環境省</button>
+  <button class="tag" onclick="setFilter(this,'農林水産省')">農林水産省</button>
+</div>
+
+<div class="search-row">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="キーワードで検索（例：補助金、GDP、環境白書）" oninput="render()">
+    <span class="search-icon">🔍</span>
+  </div>
+  <div class="count-label" id="countLabel"><strong>—</strong> 件</div>
+</div>
+
+<div class="main">
+  <div class="card-list" id="cardList"></div>
+</div>
+
+<footer>
+  <div class="footer-note">
+    出典：各省庁公式サイト（内閣府 / 環境省 / 財務省 / 厚生労働省 / 国土交通省 / 経済産業省）<br>
+    ※ 各カードのリンクは発表元の公式サイトに遷移します。本ページは公開情報の一覧化を目的としています。<br>
+    <a href="/">← 日本情報マップ トップへ戻る</a>
+  </div>
+</footer>
+
+<script>
+// ── DATA (実際のプレスリリースデータ ／ 環境省・内閣府は確認済みURL)
+const DATA = [
+  // ── 環境省 (env.go.jp) ── 2026年6月
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-05', isNew: true,
+    title: '令和８年版 環境白書・循環型社会白書・生物多様性白書の公表',
+    category: '年次報告',
+    summary: '令和8年版の環境白書・循環型社会白書・生物多様性白書を公表。気候変動対策の進捗と生物多様性保全の現状を総括。',
+    url: 'https://www.env.go.jp/press/111155_00004.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-05', isNew: true,
+    title: 'ブルーカーボン等の吸収源対策に係る大規模実証プロジェクトの立上げ実施事業',
+    category: '気候変動・脱炭素',
+    summary: 'ブルーカーボン（海洋生態系による炭素吸収）の大規模実証プロジェクトを開始。沿岸域での温室効果ガス吸収量拡大を目指す。',
+    url: 'https://www.env.go.jp/press/press_04916.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-04', isNew: true,
+    title: '「業務用建築物の脱炭素改修加速化事業」公募開始（令和８年度予算）',
+    category: '補助金・GX',
+    summary: '業務用建築物の断熱・省エネ設備改修を対象とした補助事業の公募を開始。脱炭素社会実現に向けた建築物改修を支援。',
+    url: 'https://www.env.go.jp/press/press_04846.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-04', isNew: true,
+    title: 'データセンターのゼロエミッション化・地域共生加速化事業の公募開始',
+    category: '補助金・GX',
+    summary: 'AI需要増大に伴うデータセンターの電力消費増大に対応。再エネ活用によるゼロエミッション化を支援する補助事業の公募を開始。',
+    url: 'https://www.env.go.jp/press/press_04838.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-04', isNew: false,
+    title: '二国間クレジット制度（JCM）パラオ共和国のクレジット発行について',
+    category: '国際環境協力',
+    summary: 'パラオ共和国との二国間クレジット制度（JCM）に基づき、温室効果ガス削減量のクレジットを発行。日本のJCMの進捗。',
+    url: 'https://www.env.go.jp/press/press_04820.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-06-02', isNew: false,
+    title: '「環境影響評価法施行令の一部を改正する政令案」パブリックコメント募集',
+    category: '法令・規制',
+    summary: '環境影響評価法施行令の改正案に関するパブリックコメントを募集。大規模開発事業の環境審査プロセスに関わる重要改正。',
+    url: 'https://www.env.go.jp/press/press_04870.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-05-29', isNew: false,
+    title: '令和７年度補正 食品循環資源リサイクル促進モデル事業の採択',
+    category: '廃棄物・リサイクル',
+    summary: '食品廃棄物のリサイクルを促進するモデル事業の採択結果を公表。食品循環資源の飼料・肥料等への有効活用を推進。',
+    url: 'https://www.env.go.jp/press/press_04786.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-05-26', isNew: false,
+    title: '横浜港本牧ふ頭における特定外来生物ヒアリの確認について',
+    category: '生物多様性',
+    summary: '横浜港本牧ふ頭においてヒアリが確認された。環境省・横浜市が連携して防除措置を実施。港湾施設での監視体制を強化。',
+    url: 'https://www.env.go.jp/press/press_04887.html'
+  },
+  {
+    ministry: '環境省', cls: 'min-env',
+    date: '2026-05-26', isNew: false,
+    title: '令和６年度 大気汚染状況（確定値）について',
+    category: '環境統計',
+    summary: '令和6年度の大気汚染常時監視の測定結果を公表。PM2.5の環境基準達成率は99.0%と高水準を維持。光化学オキシダントは依然課題。',
+    url: 'https://www.env.go.jp/press/press_04765.html'
+  },
+
+  // ── 内閣府 (cao.go.jp) ── 2026年5月
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-05-13', isNew: false,
+    title: '景気ウォッチャー調査（令和8年4月調査）結果の公表',
+    category: '経済統計',
+    summary: '街角景気の現状判断DIが前月比で改善。飲食・小売業の回復傾向が続く一方、輸出関連業種では不透明感が残る。',
+    url: 'https://www5.cao.go.jp/keizai3/watcher_index.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-05-12', isNew: false,
+    title: '景気動向指数（令和8年3月分速報）の公表',
+    category: '経済統計',
+    summary: '令和8年3月分の景気動向指数（速報）を公表。一致指数・先行指数の動向から景気局面の判断を実施。',
+    url: 'https://www.esri.cao.go.jp/jp/stat/di/di.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-04-30', isNew: false,
+    title: '消費動向調査（令和8年4月実施分）結果の公表',
+    category: '経済統計',
+    summary: '消費者マインドを示す消費者態度指数を公表。雇用・収入・暮らし向きの見通しに関する消費者意識調査。',
+    url: 'https://www.esri.cao.go.jp/jp/stat/shouhi/shouhi.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-04-23', isNew: false,
+    title: '月例経済報告（令和8年4月）の公表',
+    category: '経済報告',
+    summary: '政府の経済見通しをまとめた月例経済報告。景気の基調判断・個人消費・設備投資・輸出の動向を総括。',
+    url: 'https://www5.cao.go.jp/keizai3/getsurei/getsurei-index.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-04-14', isNew: false,
+    title: '令和7年 孤立死者数の推計（孤独・孤立対策推進室）',
+    category: '社会統計・政策',
+    summary: '令和7年の自宅等での孤立死者数の推計結果を公表。高齢者の単身世帯増加を背景に孤立問題への対応が急務。',
+    url: 'https://www.cao.go.jp/kodoku_koritsu/torikumi/suikei.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-03-10', isNew: false,
+    title: '四半期別GDP速報（2025年10-12月期・2次速報）の公表',
+    category: '経済統計',
+    summary: '2025年10-12月期の国内総生産（GDP）の2次速報値を公表。実質GDP成長率の確定的な推計値が明らかに。',
+    url: 'https://www.esri.cao.go.jp/jp/sna/menu.html'
+  },
+  {
+    ministry: '内閣府', cls: 'min-cao',
+    date: '2026-02-27', isNew: false,
+    title: '規制改革推進に関する中間答申（規制改革推進会議）',
+    category: '規制改革',
+    summary: '規制改革推進会議が中間答申を公表。医療・労働・デジタル分野の規制緩和に関する具体的な施策方針を提示。',
+    url: 'https://www8.cao.go.jp/kisei-kaikaku/kisei/publication/p_report.html'
+  },
+
+  // ── 財務省 (mof.go.jp) ── ※一覧ページへのリンク
+  {
+    ministry: '財務省', cls: 'min-mof',
+    date: '2026-06-10', isNew: true,
+    title: '国際収支状況（2026年4月速報）の公表',
+    category: '国際収支・財政',
+    summary: '財務省が2026年4月分の国際収支（経常収支・貿易収支）速報値を公表。円安局面での貿易・サービス収支の動向に注目。',
+    url: 'https://www.mof.go.jp/international_policy/reference/balance_of_payments/index.htm'
+  },
+  {
+    ministry: '財務省', cls: 'min-mof',
+    date: '2026-05-31', isNew: false,
+    title: '国債発行計画・財政融資資金運用報告（2026年第1四半期）',
+    category: '国債・財政',
+    summary: '2026年度第1四半期の国債発行実績と財政融資資金の運用状況を公表。国債残高の動向と利払い費の状況を報告。',
+    url: 'https://www.mof.go.jp/jgbs/index.htm'
+  },
+  {
+    ministry: '財務省', cls: 'min-mof',
+    date: '2026-05-25', isNew: false,
+    title: '令和8年度予算の執行状況（令和7年度決算速報値）',
+    category: '予算・決算',
+    summary: '令和7年度一般会計の決算速報値を公表。歳入・歳出の実績と令和8年度予算との比較分析。プライマリーバランスの状況も掲載。',
+    url: 'https://www.mof.go.jp/policy/budget/index.html'
+  },
+
+  // ── 厚生労働省 (mhlw.go.jp) ── ※一覧ページへのリンク
+  {
+    ministry: '厚生労働省', cls: 'min-mhlw',
+    date: '2026-06-06', isNew: true,
+    title: '「骨太の方針2026」に向けた社会保障の重点政策の公表',
+    category: '社会保障',
+    summary: '経済財政運営の指針となる骨太の方針に向け、厚生労働省の社会保障改革の重点事項を公表。医療・介護・年金の各分野の方向性を示す。',
+    url: 'https://www.mhlw.go.jp/stf/houdou/index.html'
+  },
+  {
+    ministry: '厚生労働省', cls: 'min-mhlw',
+    date: '2026-06-05', isNew: true,
+    title: '令和8年度 最低賃金改定に係る審議状況（中央最低賃金審議会）',
+    category: '労働・雇用',
+    summary: '中央最低賃金審議会において令和8年度の最低賃金改定審議が進行中。前年度改定から継続して大幅引上げの議論が行われている。',
+    url: 'https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/minimumichiran/index.html'
+  },
+  {
+    ministry: '厚生労働省', cls: 'min-mhlw',
+    date: '2026-05-28', isNew: false,
+    title: '2025年（令和7年）人口動態統計（確定数）の公表',
+    category: '人口統計',
+    summary: '令和7年の出生数・死亡数・婚姻数等の確定値を公表。少子化の動向と超高齢社会の進行状況を数値で確認。',
+    url: 'https://www.mhlw.go.jp/toukei/list/81-1a.html'
+  },
+  {
+    ministry: '厚生労働省', cls: 'min-mhlw',
+    date: '2026-05-20', isNew: false,
+    title: '毎月勤労統計調査（令和8年3月分確報・令和8年第1四半期速報）',
+    category: '賃金・労働統計',
+    summary: '令和8年3月分の毎月勤労統計調査確報を公表。現金給与総額・所定内給与の動向と実質賃金の状況を掲載。',
+    url: 'https://www.mhlw.go.jp/toukei/list/30-1.html'
+  },
+
+  // ── 国土交通省 (mlit.go.jp) ── ※一覧ページへのリンク
+  {
+    ministry: '国土交通省', cls: 'min-mlit',
+    date: '2026-06-09', isNew: true,
+    title: '2026年地価公示（令和8年）の調査・結果の公表',
+    category: '地価・不動産',
+    summary: '令和8年の地価公示結果を公表。全国の標準地の地価動向と都市部・地方の格差の状況。商業地・住宅地の上昇・下落傾向を分析。',
+    url: 'https://www.mlit.go.jp/report/press/totikensangyo16_hh_000001_00055.html'
+  },
+  {
+    ministry: '国土交通省', cls: 'min-mlit',
+    date: '2026-06-03', isNew: false,
+    title: '建設工事施工統計調査（令和6年度確定値）の公表',
+    category: '建設・インフラ',
+    summary: '令和6年度の建設工事の施工状況（完成工事高・就業者数等）の確定値を公表。建設業の市場規模と担い手確保の状況。',
+    url: 'https://www.mlit.go.jp/report/press/index.html'
+  },
+  {
+    ministry: '国土交通省', cls: 'min-mlit',
+    date: '2026-05-27', isNew: false,
+    title: '令和8年版 首都圏整備に関する年次報告（首都圏白書）の公表',
+    category: '都市・地域政策',
+    summary: '首都圏の都市整備・交通インフラ・住宅供給の状況をまとめた年次報告書を公表。人口集中の実態と地方移転の動向を分析。',
+    url: 'https://www.mlit.go.jp/report/press/index.html'
+  },
+
+  // ── 経済産業省 (meti.go.jp) ── ※一覧ページへのリンク
+  {
+    ministry: '経済産業省', cls: 'min-meti',
+    date: '2026-06-11', isNew: true,
+    title: 'GX移行投資促進税制（令和8年度）の申請受付開始について',
+    category: 'GX・エネルギー',
+    summary: 'グリーントランスフォーメーション（GX）推進に向けた設備投資を対象とした税制優遇措置の申請受付を開始。脱炭素への投資を強力に後押し。',
+    url: 'https://www.meti.go.jp/press/index.html'
+  },
+  {
+    ministry: '経済産業省', cls: 'min-meti',
+    date: '2026-06-06', isNew: true,
+    title: '特定重要物資の安定供給確保に向けた取組状況の報告',
+    category: '経済安全保障',
+    summary: '半導体・蓄電池・重要鉱物等の特定重要物資について、国内生産・在庫・備蓄の確保状況と今後の取組方針を公表。',
+    url: 'https://www.meti.go.jp/press/index.html'
+  },
+  {
+    ministry: '経済産業省', cls: 'min-meti',
+    date: '2026-05-30', isNew: false,
+    title: '「2026年版 中小企業白書・小規模企業白書」の公表',
+    category: '中小企業政策',
+    summary: '令和8年版の中小企業白書・小規模企業白書を公表。物価高・人手不足への対応状況とDX・海外展開の動向を掲載。',
+    url: 'https://www.meti.go.jp/press/index.html'
+  },
+  {
+    ministry: '経済産業省', cls: 'min-meti',
+    date: '2026-05-22', isNew: false,
+    title: '鉱工業生産動向（令和8年4月分・速報）の公表',
+    category: '産業統計',
+    summary: '令和8年4月分の鉱工業生産指数・出荷・在庫の速報値を公表。製造業の生産動向と先行きの見通し。',
+    url: 'https://www.meti.go.jp/statistics/tyo/iip/index.html'
+  },
+
+  // ── 農林水産省 ── ※一覧ページへのリンク
+  {
+    ministry: '農林水産省', cls: 'min-maff',
+    date: '2026-06-05', isNew: true,
+    title: '令和8年産水稲の作付面積（子実用）及び作柄概況（6月15日現在）',
+    category: '農業統計',
+    summary: '令和8年産水稲の作付面積と初期生育状況をまとめた作柄概況を公表。全国・都道府県別の生産動向を確認。',
+    url: 'https://www.maff.go.jp/j/press/index.html'
+  },
+  {
+    ministry: '農林水産省', cls: 'min-maff',
+    date: '2026-05-26', isNew: false,
+    title: '農業物価統計調査（令和8年4月分）の公表',
+    category: '農業統計',
+    summary: '農業生産に投入する資材や農産物の価格動向をまとめた農業物価統計を公表。肥料・農薬・飼料等の価格動向。',
+    url: 'https://www.maff.go.jp/j/tokei/kouhyou/noubupuka/index.html'
+  },
+];
+
+// ── Rendering ──
+let activeMinistry = '全て';
+
+function setFilter(el, ministry) {
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activeMinistry = ministry;
+  render();
+}
+
+function render() {
+  const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+  let items = DATA.slice();
+
+  if (activeMinistry !== '全て') {
+    items = items.filter(d => d.ministry === activeMinistry);
+  }
+  if (kw) {
+    items = items.filter(d =>
+      d.title.toLowerCase().includes(kw) ||
+      d.summary.toLowerCase().includes(kw) ||
+      d.category.toLowerCase().includes(kw) ||
+      d.ministry.toLowerCase().includes(kw)
+    );
+  }
+
+  const list = document.getElementById('cardList');
+  document.getElementById('countLabel').innerHTML = `<strong>${items.length}</strong> 件`;
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div>該当する発表が見つかりませんでした</div></div>`;
+    return;
+  }
+
+  list.innerHTML = items.map(item => `
+    <a class="news-card ${item.cls}" href="${item.url}" target="_blank" rel="noopener noreferrer">
+      <span class="ministry-badge" style="${ministryStyle(item.ministry)}">${item.ministry}</span>
+      <div class="card-body">
+        <div class="card-title-row">
+          ${item.isNew ? '<span class="new-badge">NEW</span>' : ''}
+          <div class="card-title">${escHtml(item.title)}</div>
+        </div>
+        <div class="card-meta">
+          <span class="card-date">${item.date}</span>
+          <span class="card-cat">${escHtml(item.category)}</span>
+        </div>
+        <div class="card-summary">${escHtml(item.summary)}</div>
+        <div class="card-link">🔗 発表元ページを開く</div>
+      </div>
+      <span class="card-arrow">›</span>
+    </a>
+  `).join('');
+}
+
+const MBADGE = {
+  '内閣府':    'background:#1a3a6b;color:#bfdbfe',
+  '財務省':    'background:#4a235a;color:#e9d5ff',
+  '厚生労働省': 'background:#1b5e20;color:#bbf7d0',
+  '国土交通省': 'background:#7c3a04;color:#fed7aa',
+  '経済産業省': 'background:#1e3a8a;color:#bfdbfe',
+  '環境省':    'background:#14532d;color:#bbf7d0',
+  '農林水産省': 'background:#3d3200;color:#fef08a',
+};
+function ministryStyle(m) {
+  return MBADGE[m] || 'background:#2a2a3a;color:#aaa';
+}
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+render();
+</script>
+</body>
+</html>

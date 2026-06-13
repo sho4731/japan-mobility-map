@@ -25,3 +25,8 @@
   from = "/ir-salary"
   to   = "/ir-salary/index.html"
   status = 200
+
+[[redirects]]
+  from = "/gov-news"
+  to   = "/gov-news/index.html"
+  status = 200
